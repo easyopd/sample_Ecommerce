@@ -1,0 +1,30 @@
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+/* Style for previous & next buttons */
+.slick-prev, .slick-next {
+    width: 50px !important;  /* Increase arrow size */
+    height: 50px !important;
+    z-index: 10;  /* Ensure arrows stay on top */
+}
+
+.slick-prev:before, .slick-next:before {
+    font-size: 30px !important;  /* Increase icon size */
+    color: white !important;  /* Set color */
+}
+
+/* Style for navigation dots */
+.slick-dots li button:before {
+    font-size: 12px !important;
+    color: white !important;
+}
+
+/* Style for rounded image container */
+.slick-slide div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+};
+
