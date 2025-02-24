@@ -2,137 +2,126 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import myContext from '../../../context/data/myContext';
 
-// Reusable Input Component
-const InputField = ({ name, value, onChange, placeholder }) => (
-  <input
-    type="text"
-    name={name}
-    value={value || ""} // Ensures no undefined value
-    onChange={onChange}
-    className="bg-gray-600 mb-4 px-2 py-2 w-full sm:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
-    placeholder={placeholder}
-  />
-);
+const AddProduct = () => {
+  const { addProduct, setProducts } = useContext(myContext);
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState('');
+  const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
+  const [image1, setImage1] = useState(null);
 
-function AddProductWithImageUpload() {
-  const context = useContext(myContext);
-  const { products, setProducts, addProduct } = context;
-
-  // States for image upload
-  const [image, setImage] = useState(null); // To store selected image file
-  const [imageUrl, setImageUrl] = useState(null); // To display uploaded image
-  const [loading, setLoading] = useState(false); // Loading state for image upload
-  const [error, setError] = useState(null); // Error state for upload failures
-
-  // Function to handle input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProducts((prev) => ({ ...prev, [name]: value }));
+  const handleImageUpload = (e, setImage) => {
+    const file = e.target.files[0];
+    setImage(file);
   };
 
-  // Handle image selection
-  const handleImageChange = (event) => {
-    const file = event.target.files[0]; // Get the first file from the input field
-    setImage(file); // Set the image file in state
-    setError(null); // Reset error when a new image is selected
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Upload images to Cloudinary
-  const uploadImage = async () => {
-    if (!image) {
-      alert('Please select an image first');
-      return;
-    }
+    // Upload images to Cloudinary
+    const uploadImage = async (image) => {
+        const formData = new FormData();
+        formData.append('file', image);
+        formData.append('upload_preset', 'HunarShawls'); // Replace with your Cloudinary preset
 
-    setLoading(true); // Start loading state
-    const formData = new FormData();
-    formData.append('file', image); // Add file to the form data
-    formData.append('upload_preset', 'HunarShawls'); // Replace with your preset
-    formData.append('cloud_name', 'dokzpyptq'); // Replace with your cloud name
+        const response = await axios.post('https://api.cloudinary.com/v1_1/dokzpyptq/image/upload', formData);
+        return response.data.secure_url; // Return the Cloudinary URL
+    };
 
-    try {
-      const response = await axios.post(
-        'https://api.cloudinary.com/v1_1/dokzpyptq/image/upload', // Cloudinary API endpoint for uploading images
-        formData
-      );
-      const { url } = response.data;
-      setImageUrl(url); // Set the image URL to state to display it
-      alert('Image uploaded successfully');
-    } catch (error) {
-      console.error('Error uploading image', error);
-      setError('Image upload failed. Please try again later.'); // Set error message to state
-    } finally {
-      setLoading(false); // Stop loading state regardless of success or failure
-    }
-  };
+    // Upload all images to Cloudinary
+    const imageUrls = await Promise.all([
+        image1 && uploadImage(image1),
+    ]);
 
-  // Form validation before submission
-  const handleSubmit = async () => {
-    if (!products.title || !products.price || !products.category) {
-      alert("Please fill in all required fields.");
-      return;
-    }
+    // Prepare the product data
+    const productData = {
+        title,
+        price,
+        category,
+        description,
+        imageUrl1: imageUrls[0],
+        time: new Date(),
+        date: new Date().toLocaleString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+        }),
+    };
 
-    // Add product details first
-    await addProduct();
+    // Now call addProduct directly with the product data
+    console.log("Product data before sending to Firestore: ", productData);
 
-    // After adding the product, proceed to upload images
-    uploadImage();
-  };
+    addProduct(productData);
+
+    // Optionally reset form state after submission
+    setTitle('');
+    setPrice('');
+    setCategory('');
+    setDescription('');
+    setImage1(null);
+};
+
+
 
   return (
-    <div className="flex justify-center items-center h-screen p-4">
+    <form onSubmit={handleSubmit} className="flex justify-center items-center h-screen p-4">
       <div className="bg-gray-800 px-10 py-10 rounded-xl w-full max-w-md">
         <h1 className="text-center text-white text-xl mb-4 font-bold">Add Product</h1>
 
         {/* Product Input Fields */}
-        <InputField name="title" value={products.title} onChange={handleChange} placeholder="Product Title" />
-        <InputField name="price" value={products.price} onChange={handleChange} placeholder="Product Price" />
-        <InputField name="category" value={products.category} onChange={handleChange} placeholder="Product Category" />
-
-        <textarea
-          cols="30"
-          rows="4"
-          name="description"
-          value={products.description || ""}
-          onChange={handleChange}
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Product Title"
+          required
           className="bg-gray-600 mb-4 px-2 py-2 w-full sm:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
-          placeholder="Product Description"
-        ></textarea>
+        />
+        <input
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          placeholder="Price"
+          required
+          className="bg-gray-600 mb-4 px-2 py-2 w-full sm:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
+        />
+        <input
+          type="text"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="Category"
+          required
+          className="bg-gray-600 mb-4 px-2 py-2 w-full sm:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
+        />
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description"
+          required
+          className="bg-gray-600 mb-4 px-2 py-2 w-full sm:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
+        />
 
-        {/* Image Upload Section */}
+        {/* Image Upload Fields */}
         <div className="mb-4">
-          <label htmlFor="imageUpload" className="text-white">Upload Image:</label>
+          <label htmlFor="imageUpload1" className="text-white">Upload Image 1:</label>
           <input
             type="file"
-            id="imageUpload"
-            accept="image/*"
-            onChange={handleImageChange}
+            id="imageUpload1"
+            onChange={(e) => handleImageUpload(e, setImage1)}
             className="bg-gray-600 mb-4 px-2 py-2 w-full sm:w-[20em] rounded-lg text-white placeholder:text-gray-200 outline-none"
           />
         </div>
 
+        {/* Submit Button */}
         <button
-          onClick={handleSubmit}
+          type="submit"
           className="bg-yellow-500 w-full text-black font-bold px-2 py-2 rounded-lg"
-          disabled={loading}
         >
-          {loading ? 'Uploading...' : 'Add Product'}
+          Add Product
         </button>
-
-        {/* Error Message */}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-
-        {/* Display Uploaded Image */}
-        {imageUrl && (
-          <div>
-            <h3 className="text-white">Uploaded Image:</h3>
-            <img src={imageUrl} alt="Uploaded" style={{ width: '300px' }} />
-          </div>
-        )}
       </div>
-    </div>
+    </form>
   );
-}
+};
 
-export default AddProductWithImageUpload;
+export default AddProduct;

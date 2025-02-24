@@ -64,7 +64,7 @@ function ProductInfo() {
                         <img
                             alt="ecommerce"
                             className="lg:w-1/3 w-full lg:h-auto  object-cover object-center rounded"
-                            src={products.imageUrl}
+                            src={products.imageUrl1}
                         />
                         <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
                             <h2 className="text-sm title-font text-gray-500 tracking-widest">

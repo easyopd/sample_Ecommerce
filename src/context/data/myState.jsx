@@ -21,13 +21,11 @@ function myState(props) {
     const [loading, setLoading] = useState(false);
 
     const [products, setProducts] = useState({
-        title: null,
-        price: null,
-        imageUrl1: null,
-        imageUrl2: null,
-        imageUrl3: null,
-        category: null,
-        description: null,
+        title: " ",
+        price: " ",
+        imageUrl1: " ",
+        category: " ",
+        description: " ",
         time: Timestamp.now(),
         date: new Date().toLocaleString(
             "en-US",
@@ -38,31 +36,35 @@ function myState(props) {
             }
         )
     });
+    console.log(products,"checking if products are saved in state successfully");
 
-    const addProduct = async () => {
-        if (products.title == null || products.price == null || products.imageUrl1 == null || products.imageUrl2 == null || products.imageUrl3 == null || products.category == null || products.description == null) {
-            return toast.error("all fields are required")
+    const addProduct = async (productData) => {
+        if (!productData.title || !productData.price || !productData.imageUrl1 || !productData.category || !productData.description) {
+            return toast.error("All fields are required");
         }
-
-        setLoading(true)
-
+    
+        setLoading(true);
+    
         try {
             const productRef = collection(fireDB, 'products');
-            await addDoc(productRef, products)
-            toast.success("Add product successfully");
+            await addDoc(productRef, productData); // Add the product to Firestore
+            toast.success("Product added successfully");
+    
+            // Redirect after successful addition
             setTimeout(() => {
-                window.location.href = '/dashboard'
+                window.location.href = '/dashboard';
             }, 800);
+    
+            // Fetch updated product data
             getProductData();
-            setLoading(false)
+            setLoading(false);
         } catch (error) {
             console.log(error);
-            setLoading(false)
+            setLoading(false);
         }
-        // setProducts("")
-
-
-    }
+    };
+    
+    
 
     const [product, setProduct] = useState([]);
 
