@@ -50,7 +50,7 @@ function Cart() {
     if (!name || !address || !pincode || !phoneNumber) {
       return toast.error("All fields are required");
     }
-
+  
     const addressInfo = {
       name,
       address,
@@ -62,19 +62,32 @@ function Cart() {
         year: "numeric",
       }),
     };
-
+  
+    // Make a POST request to the Vercel function to create an order
+    const response = await fetch('https://your-vercel-project-url.vercel.app/api/createOrder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        amount: grandTotal, // Send the total amount (in INR) to the backend
+      }),
+    });
+  
+    const data = await response.json();
+    const orderId = data.orderId;
+  
     const options = {
-      key: "rzp_test_Q3zI7yUYTiTajO", // Use environment variable
+      key: "rzp_live_m1KjRaIiXqwMu5", // Your Razorpay Test Key (public key)
       amount: parseInt(grandTotal * 100), // Amount in paisa (100 = ₹1)
       currency: "INR",
-      order_receipt: 'order_rcptid_' + name,
+      order_id: orderId, // The order ID returned from Vercel function
       name: "Hunar-Pashmina",
       description: "for testing purpose",
-      handler: async function (response) {  // Add `async` keyword here if you want to use `await` inside the handler
+      handler: async function (response) {
         console.log(response);
         toast.success('Payment Successful');
   
-
         const paymentId = response.razorpay_payment_id;
         const orderInfo = {
           cartItems,
@@ -88,8 +101,7 @@ function Cart() {
           userid: JSON.parse(localStorage.getItem("user")).uid,
           paymentId,
         };
-        console.log(orderInfo,"checking all the order details")
-
+  
         try {
           const orderRef = collection(fireDB, 'order');
           await addDoc(orderRef, orderInfo);
@@ -101,10 +113,16 @@ function Cart() {
         color: "#3399cc",
       },
     };
-
-    var pay = new window.Razorpay(options);
-    pay.open();
+  
+    if (typeof window.Razorpay === "function") {
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } else {
+      console.error("Razorpay script not loaded!");
+      toast.error("Razorpay not loaded. Please try again.");
+    }
   };
+  
 
   return (
     <Layout>
