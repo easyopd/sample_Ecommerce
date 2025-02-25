@@ -1,5 +1,7 @@
 /* eslint-disable react/jsx-key */
 import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import myContext from '../../../context/data/myContext';
 import Layout from '../../../components/layout/Layout';
@@ -14,6 +16,8 @@ function DashboardTab() {
 
     // console.log(product)
     let [isOpen, setIsOpen] = useState(false)
+    const navigate = useNavigate();
+
 
     function closeModal() {
         setIsOpen(false)
@@ -24,8 +28,8 @@ function DashboardTab() {
     }
 
     const add = () => {
-        window.location.href = '/addproduct'
-    }
+        navigate('/addproduct');
+      }
     return (
         <>
             <div className="container mx-auto">
