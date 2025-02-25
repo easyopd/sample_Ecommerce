@@ -15,6 +15,7 @@ function ProductInfo() {
     const [products, setProducts] = useState('')
     const params = useParams()
     // console.log(products.title)
+    //for debugging products title
 
     const getProductData = async () => {
         setLoading(true)
