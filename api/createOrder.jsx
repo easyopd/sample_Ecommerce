@@ -2,11 +2,20 @@ const Razorpay = require('razorpay');
 
 const razorpay = new Razorpay({
   key_id: 'rzp_live_m1KjRaIiXqwMu5', // Public Key (Test Mode)
-  key_secret: 'z5qOvPaUz8hZOnfUnIOWJTsl'
-  , // Secret Key (Keep this secret and secure)
+  key_secret: 'z5qOvPaUz8hZOnfUnIOWJTsl' // Secret Key (Keep this secret and secure)
 });
 
 module.exports = async (req, res) => {
+  // Set CORS headers to allow cross-origin requests
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allows all domains, change if needed for security
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Allow specific methods
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow Content-Type header
+  
+  // Handle preflight request (OPTIONS method)
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method === 'POST') {
     try {
       // Retrieve amount from the request body (from frontend)
