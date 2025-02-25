@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Dialog, Transition } from '@headlessui/react';
 import { RxCross2 } from 'react-icons/rx';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
   const context = useContext(myContext);
@@ -14,10 +15,11 @@ function Navbar() {
   const user = JSON.parse(localStorage.getItem('user'));
   //console.log("User details are stored successfully:", user);
   const cartItems = useSelector((state) => state.cart);
+  const navigate = useNavigate();
 
   const logout = () => {
     localStorage.clear('user');
-    window.location.href = '/login';
+    navigate('/login');
   };
 
   return (
