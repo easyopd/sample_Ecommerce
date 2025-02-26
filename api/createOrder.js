@@ -1,18 +1,20 @@
-const Razorpay = require("razorpay");
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,  // ✅ Use environment variables
-  key_secret: process.env.RAZORPAY_SECRET,  // ✅ Do NOT hardcode secrets!
-});
+const allowedOrigins = [
+  "http://localhost:5173",  // For local development
+  "https://sample-ecommerce-blond.vercel.app" // Deployed frontend
+];
 
 module.exports = async (req, res) => {
   try {
-    // ✅ Handle CORS for all requests
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    // ✅ Set CORS headers dynamically
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    // ✅ Handle preflight (OPTIONS) requests
+    // ✅ Handle preflight requests
     if (req.method === "OPTIONS") {
       return res.status(200).end();
     }
@@ -27,7 +29,13 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: "Amount is required" });
     }
 
-    // ✅ Create order with Razorpay
+    // ✅ Razorpay order creation
+    const Razorpay = require("razorpay");
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,  // Use environment variables
+      key_secret: process.env.RAZORPAY_SECRET
+    });
+
     const options = {
       amount: amount * 100, // Convert INR to paisa
       currency: "INR",
@@ -35,9 +43,9 @@ module.exports = async (req, res) => {
     };
 
     const order = await razorpay.orders.create(options);
-    return res.status(200).json({ orderId: order.id });
+    res.status(200).json({ orderId: order.id });
   } catch (error) {
-    console.error("❌ Razorpay Order Error:", error);
-    return res.status(500).json({ error: "Failed to create order", details: error.message });
+    console.error("Razorpay Order Error:", error);
+    res.status(500).json({ error: "Failed to create order" });
   }
 };
