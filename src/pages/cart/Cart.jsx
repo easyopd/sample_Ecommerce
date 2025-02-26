@@ -7,6 +7,7 @@ import { deleteFromCart } from '../../redux/cartSlice';
 import { toast } from 'react-toastify';
 import { addDoc, collection } from 'firebase/firestore';
 import { fireDB } from '../../fireabase/FirebaseConfig';
+import axios from "axios";
 
 function Cart() {
   const context = useContext(myContext);
@@ -46,82 +47,75 @@ function Cart() {
   const [pincode, setPincode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const buyNow = async () => {
-    if (!name || !address || !pincode || !phoneNumber) {
-      return toast.error("All fields are required");
-    }
   
-    const addressInfo = {
-      name,
-      address,
-      pincode,
-      phoneNumber,
-      date: new Date().toLocaleString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      }),
-    };
-  
-    // Make a POST request to the Vercel function to create an order
-    const response = await fetch('https://your-vercel-project-url.vercel.app/api/createOrder', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        amount: grandTotal, // Send the total amount (in INR) to the backend
-      }),
+
+const buyNow = async () => {
+  if (!name || !address || !pincode || !phoneNumber) {
+    return toast.error("All fields are required");
+  }
+
+  const addressInfo = {
+    name,
+    address,
+    pincode,
+    phoneNumber,
+    date: new Date().toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    }),
+  };
+
+  try {
+    // ✅ Replace with your actual API endpoint
+    const API_URL = "https://your-vercel-project-url.vercel.app/api/createOrder";
+
+    const response = await axios.post(API_URL, { amount: grandTotal }, {
+      headers: { "Content-Type": "application/json" }
     });
-  
-    const data = await response.json();
-    const orderId = data.orderId;
-  
+
+    const orderId = response.data.orderId;
+
     const options = {
-      key: "rzp_live_m1KjRaIiXqwMu5", // Your Razorpay Test Key (public key)
-      amount: parseInt(grandTotal * 100), // Amount in paisa (100 = ₹1)
+      key: "rzp_live_m1KjRaIiXqwMu5", // Razorpay Public Key
+      amount: parseInt(grandTotal * 100),
       currency: "INR",
-      order_id: orderId, // The order ID returned from Vercel function
+      order_id: orderId,
       name: "Hunar-Pashmina",
-      description: "for testing purpose",
+      description: "Order Payment",
       handler: async function (response) {
-        console.log(response);
-        toast.success('Payment Successful');
-  
-        const paymentId = response.razorpay_payment_id;
+        toast.success("Payment Successful");
+
         const orderInfo = {
           cartItems,
           addressInfo,
-          date: new Date().toLocaleString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          }),
+          date: new Date().toLocaleString(),
           email: JSON.parse(localStorage.getItem("user")).email,
           userid: JSON.parse(localStorage.getItem("user")).uid,
-          paymentId,
+          paymentId: response.razorpay_payment_id,
         };
-  
+
         try {
-          const orderRef = collection(fireDB, 'order');
-          await addDoc(orderRef, orderInfo);
+          await addDoc(collection(fireDB, "order"), orderInfo);
         } catch (error) {
-          console.log(error);
+          console.error("Firestore Error:", error);
         }
       },
-      theme: {
-        color: "#3399cc",
-      },
+      theme: { color: "#3399cc" },
     };
-  
+
     if (typeof window.Razorpay === "function") {
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } else {
-      console.error("Razorpay script not loaded!");
       toast.error("Razorpay not loaded. Please try again.");
     }
-  };
+  } catch (error) {
+    console.error("Order API Error:", error);
+    toast.error("Failed to create order.");
+  }
+};
+
   
 
   return (
