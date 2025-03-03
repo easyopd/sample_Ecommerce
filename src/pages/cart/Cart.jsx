@@ -49,72 +49,85 @@ function Cart() {
 
   
 
-const buyNow = async () => {
-  if (!name || !address || !pincode || !phoneNumber) {
-    return toast.error("All fields are required");
-  }
-
-  const addressInfo = {
-    name,
-    address,
-    pincode,
-    phoneNumber,
-    date: new Date().toLocaleString("en-US", {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-    }),
+  const buyNow = async () => {
+    if (!name || !address || !pincode || !phoneNumber) {
+      return toast.error("All fields are required");
+    }
+  
+    const addressInfo = {
+      name,
+      address,
+      pincode,
+      phoneNumber,
+      date: new Date().toLocaleString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }),
+    };
+  
+    try {
+      // ✅ Call Firebase Function to Create Order
+      const orderResponse = await axios.post(
+        "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/createOrder",
+        { amount: grandTotal }
+      );
+  
+      const { id: orderId, amount, currency } = orderResponse.data;
+  
+      const options = {
+        key: "rzp_live_m1KjRaIiXqwMu5", // ✅ Replace with your Razorpay Live Key
+        amount: amount,
+        currency: currency,
+        order_id: orderId,
+        name: "Hunar-Pashmina",
+        description: "Order Payment",
+        handler: async function (response) {
+          try {
+            await verifyPayment(orderId, response.razorpay_payment_id, addressInfo);
+          } catch (error) {
+            console.error("Payment Verification Failed:", error);
+            toast.error("Payment verification failed.");
+          }
+        },
+        theme: { color: "#3399cc" },
+      };
+  
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error("Order API Error:", error);
+      toast.error("Failed to create order. Please try again.");
+    }
+  };
+  
+  // ✅ Function to Verify Payment
+  const verifyPayment = async (orderId, paymentId, addressInfo) => {
+    try {
+      const verifyResponse = await axios.post(
+        "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/verifyPayment",
+        { order_id: orderId, payment_id: paymentId }
+      );
+  
+      if (verifyResponse.data.success) {
+        toast.success("Payment verified successfully!");
+        // ✅ Store order details in Firestore
+        await addDoc(collection(fireDB, "orders"), {
+          orderId,
+          paymentId,
+          addressInfo,
+          status: "Paid",
+          date: new Date().toISOString(),
+        });
+      } else {
+        toast.error("Payment verification failed!");
+      }
+    } catch (error) {
+      console.error("Payment Verification Error:", error);
+      toast.error("Error verifying payment. Please contact support.");
+    }
   };
 
-  try {
-    // ✅ Replace with your actual API endpoint
-    const API_URL = "https://your-vercel-project-url.vercel.app/api/createOrder";
-
-    const response = await axios.post(API_URL, { amount: grandTotal }, {
-      headers: { "Content-Type": "application/json" }
-    });
-
-    const orderId = response.data.orderId;
-
-    const options = {
-      key: "rzp_live_m1KjRaIiXqwMu5", // Razorpay Public Key
-      amount: parseInt(grandTotal * 100),
-      currency: "INR",
-      order_id: orderId,
-      name: "Hunar-Pashmina",
-      description: "Order Payment",
-      handler: async function (response) {
-        toast.success("Payment Successful");
-
-        const orderInfo = {
-          cartItems,
-          addressInfo,
-          date: new Date().toLocaleString(),
-          email: JSON.parse(localStorage.getItem("user")).email,
-          userid: JSON.parse(localStorage.getItem("user")).uid,
-          paymentId: response.razorpay_payment_id,
-        };
-
-        try {
-          await addDoc(collection(fireDB, "order"), orderInfo);
-        } catch (error) {
-          console.error("Firestore Error:", error);
-        }
-      },
-      theme: { color: "#3399cc" },
-    };
-
-    if (typeof window.Razorpay === "function") {
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
-    } else {
-      toast.error("Razorpay not loaded. Please try again.");
-    }
-  } catch (error) {
-    console.error("Order API Error:", error);
-    toast.error("Failed to create order.");
-  }
-};
 
   
 
