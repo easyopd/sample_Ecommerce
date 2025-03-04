@@ -35,7 +35,7 @@ function Cart() {
     setTotalAmount(temp);
   }, [cartItems]);
 
-  const shipping = 100;
+  const shipping = 0;
   const grandTotal = shipping + totalAmount;
 
   /**========================================================================
@@ -67,7 +67,7 @@ function Cart() {
     };
   
     try {
-      // ✅ Call Firebase Function to Create Order
+      // ✅ Call Firebase Cloud Function to Create Order
       const orderResponse = await axios.post(
         "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/createOrder",
         { amount: grandTotal }
@@ -84,6 +84,7 @@ function Cart() {
         description: "Order Payment",
         handler: async function (response) {
           try {
+            // ✅ Verify Payment & Send Email
             await verifyPayment(orderId, response.razorpay_payment_id, addressInfo);
           } catch (error) {
             console.error("Payment Verification Failed:", error);
@@ -101,24 +102,43 @@ function Cart() {
     }
   };
   
-  // ✅ Function to Verify Payment
+  // ✅ Function to Verify Payment & Send Email
   const verifyPayment = async (orderId, paymentId, addressInfo) => {
     try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const email = user?.email || "no-email@provided.com"; // Get user email
+      const orderDetails = cartItems.map((item) => ({
+        title: item.title,
+        price: item.price,
+      }));
+  
+      // ✅ Call Firebase Cloud Function to Verify Payment & Send Email
       const verifyResponse = await axios.post(
         "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/verifyPayment",
-        { order_id: orderId, payment_id: paymentId }
+        {
+          order_id: orderId,
+          payment_id: paymentId,
+          email,
+          addressInfo, // ✅ Include the full address in the email
+          orderDetails,
+        }
       );
   
       if (verifyResponse.data.success) {
-        toast.success("Payment verified successfully!");
+        toast.success("Payment verified successfully! Email Sent.");
+  
         // ✅ Store order details in Firestore
         await addDoc(collection(fireDB, "orders"), {
           orderId,
           paymentId,
+          email,
           addressInfo,
+          orderDetails,
           status: "Paid",
           date: new Date().toISOString(),
         });
+  
+        toast.success("Order placed successfully!");
       } else {
         toast.error("Payment verification failed!");
       }
@@ -127,7 +147,7 @@ function Cart() {
       toast.error("Error verifying payment. Please contact support.");
     }
   };
-
+  
 
   
 
