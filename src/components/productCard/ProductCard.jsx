@@ -5,10 +5,12 @@ import myContext from '../../context/data/myContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
 import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 function ProductCard() {
     const context = useContext(myContext);
     const { mode, product, searchkey, setSearchkey, filterType, setFilterType, filterPrice, setFilterPrice } = context;
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart);
@@ -53,7 +55,7 @@ function ProductCard() {
                                         }}>
                                         
                                         {/* Product Image */}
-                                        <div onClick={() => window.location.href = `/productinfo/${id}`}
+                                        <div onClick={() => navigate(`/productinfo/${id}`)}>
                                             className="flex justify-center cursor-pointer">
                                             <img className="rounded-2xl w-full h-80 p-2 hover:scale-110 transition-transform duration-300 ease-in-out"
                                                 src={imageUrl1} alt={title} />
