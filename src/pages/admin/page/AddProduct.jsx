@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import myContext from '../../../context/data/myContext';
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
   const { addProduct, setProducts } = useContext(myContext);
@@ -10,6 +11,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [image1, setImage1] = useState(null);
+  const navigate = useNavigate();
 
   const handleImageUpload = (e, setImage) => {
     const file = e.target.files[0];
@@ -88,6 +90,7 @@ const AddProduct = () => {
       console.error("Image Upload or Firestore Error:", error);
       toast.error(error.response?.data?.error?.message || "Failed to upload image or add product.");
     }
+    navigate('/dashboard');
   };
 
   return (
