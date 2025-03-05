@@ -5,25 +5,26 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
-  const { addProduct, setProducts } = useContext(myContext);
+  const { addProduct } = useContext(myContext);
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState('Pashmina'); // ✅ Default category
+  const [quantity, setQuantity] = useState(''); // ✅ Add quantity
   const [description, setDescription] = useState('');
   const [image1, setImage1] = useState(null);
   const navigate = useNavigate();
 
-  const handleImageUpload = (e, setImage) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file);
+      setImage1(file);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !price || !category || !description || !image1) {
+    if (!title || !price || !category || !quantity || !description || !image1) {
       toast.error("All fields are required!");
       return;
     }
@@ -31,66 +32,53 @@ const AddProduct = () => {
     try {
       // ✅ Upload Image to Cloudinary
       const uploadImage = async (image) => {
-        if (!image) throw new Error("No image provided!");
-
         const formData = new FormData();
         formData.append("file", image);
-        formData.append("upload_preset", "HunarShawls"); // ✅ Check in Cloudinary settings
+        formData.append("upload_preset", "HunarShawls"); 
 
         const response = await axios.post(
           "https://api.cloudinary.com/v1_1/dokzpyptq/image/upload",
           formData,
-          { headers: { "Content-Type": "multipart/form-data" } } // ✅ Fixed Content-Type
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
 
-        if (!response.data.secure_url) {
-          throw new Error("Cloudinary response missing secure_url.");
-        }
-
-        console.log("Image uploaded successfully:", response.data.secure_url);
         return response.data.secure_url;
       };
 
-      // ✅ Upload the image
       const imageUrl = await uploadImage(image1);
-
       if (!imageUrl) {
         toast.error("Image upload failed. Please try again.");
         return;
       }
 
-      // ✅ Prepare product data
+      // ✅ Prepare product data with quantity
       const productData = {
         title,
         price,
         category,
+        quantity: parseInt(quantity), // ✅ Ensure it's stored as a number
         description,
         imageUrl1: imageUrl,
         time: new Date(),
-        date: new Date().toLocaleString("en-US", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        }),
+        date: new Date().toLocaleString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
       };
 
-      console.log("Product data before sending to Firestore:", productData);
-
-      // ✅ Add product to Firestore
       await addProduct(productData);
       toast.success("Product added successfully!");
 
       // ✅ Reset form
       setTitle("");
       setPrice("");
-      setCategory("");
+      setCategory("Pashmina");
+      setQuantity("");
       setDescription("");
       setImage1(null);
+
+      navigate('/dashboard');
     } catch (error) {
       console.error("Image Upload or Firestore Error:", error);
-      toast.error(error.response?.data?.error?.message || "Failed to upload image or add product.");
+      toast.error("Failed to upload image or add product.");
     }
-    navigate('/dashboard');
   };
 
   return (
@@ -99,57 +87,29 @@ const AddProduct = () => {
         <h1 className="text-center text-white text-xl mb-4 font-bold">Add Product</h1>
 
         {/* Product Input Fields */}
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Product Title"
-          required
-          className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none"
-        />
-        <input
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          placeholder="Price"
-          required
-          className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none"
-        />
-        <input
-          type="text"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          placeholder="Category"
-          required
-          className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none"
-        />
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Description"
-          required
-          className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none"
-        />
+        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Product Title" required className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none" />
+        <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" required className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none" />
+
+        {/* ✅ Category Dropdown */}
+        <select value={category} onChange={(e) => setCategory(e.target.value)} className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white outline-none">
+          <option value="Pashmina">Pashmina</option>
+          <option value="Aari">Aari</option>
+          <option value="Other">Other</option>
+        </select>
+
+        {/* ✅ Quantity Input */}
+        <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder="Quantity" required className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none" />
+
+        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" required className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none" />
 
         {/* Image Upload Field */}
         <div className="mb-4">
-          <label htmlFor="imageUpload1" className="text-white">Upload Image 1:</label>
-          <input
-            type="file"
-            id="imageUpload1"
-            accept="image/*"
-            onChange={(e) => handleImageUpload(e, setImage1)}
-            className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none"
-          />
+          <label htmlFor="imageUpload1" className="text-white">Upload Image:</label>
+          <input type="file" id="imageUpload1" accept="image/*" onChange={handleImageUpload} className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white placeholder-gray-200 outline-none" />
         </div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          className="bg-yellow-500 w-full text-black font-bold px-2 py-2 rounded-lg"
-        >
-          Add Product
-        </button>
+        <button type="submit" className="bg-yellow-500 w-full text-black font-bold px-2 py-2 rounded-lg">Add Product</button>
       </div>
     </form>
   );

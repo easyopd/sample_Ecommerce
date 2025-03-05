@@ -47,7 +47,7 @@ exports.createOrder = functions.https.onRequest(async (req, res) => {
   });
 });
 
-// ✅ Verify Payment & Send Email Function (with CORS)
+// ✅ Verify Payment, Update Stock & Send Email
 exports.verifyPayment = functions.https.onRequest(async (req, res) => {
   corsHandler(req, res, async () => {
     try {
@@ -70,8 +70,32 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
       );
 
       if (response.data.status === "captured" && response.data.order_id === order_id) {
+        const db = admin.firestore();
+
+        // ✅ Update Stock for Each Purchased Item
+        for (const item of orderDetails) {
+          const productRef = db.collection("products").doc(item.id);
+          const productDoc = await productRef.get();
+
+          if (!productDoc.exists) {
+            console.warn(`Product with ID ${item.id} not found`);
+            continue;
+          }
+
+          const productData = productDoc.data();
+          const newQuantity = productData.quantity - 1; // ✅ Reduce stock by 1 per purchase
+
+          if (newQuantity < 0) {
+            console.warn(`Stock for ${item.title} is already 0!`);
+            continue; // Prevents overselling
+          }
+
+          await productRef.update({ quantity: newQuantity });
+          console.log(`Stock updated for ${item.title}: ${newQuantity} remaining`);
+        }
+
         // ✅ Save Payment Info in Firestore
-        await admin.firestore().collection("payments").doc(payment_id).set({
+        await db.collection("payments").doc(payment_id).set({
           order_id,
           payment_id,
           email,
@@ -109,7 +133,7 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
-        return res.status(200).json({ success: true, message: "Payment verified & email sent!" });
+        return res.status(200).json({ success: true, message: "Payment verified, stock updated & email sent!" });
       } else {
         return res.status(400).json({ error: "Payment not captured or mismatched order_id" });
       }
