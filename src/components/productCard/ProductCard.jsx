@@ -11,7 +11,6 @@ function ProductCard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart);
-  console.log("testing");
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
