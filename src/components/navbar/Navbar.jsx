@@ -28,9 +28,10 @@ function Navbar() {
         <nav
           className="px-4 sm:px-6 lg:px-8 shadow-xl flex items-center justify-between"
           style={{
-            backgroundColor: '#0A1931', // Dark blue background
-            color: mode === 'dark' ? 'white' : '',
+            backgroundColor: mode === 'dark' ? 'black' : 'blue', // Black in dark mode, blue in light mode
+            color: mode === 'dark' ? 'white' : 'black', // White text in dark mode, black text in light mode
           }}
+          
         >
 
           {/* Mobile Menu Button */}
@@ -59,7 +60,7 @@ function Navbar() {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden lg:flex lg:items-center space-x-6">
+          <div className="hidden lg:flex lg:items-center space-x-6 transition-transform duration-1000 ease-in-out hover:scale-110">
             <Link to={'/allproducts'} className="text-sm font-medium text-white">All Products</Link>
 
             {user ? (

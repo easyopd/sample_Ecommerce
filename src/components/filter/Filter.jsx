@@ -3,8 +3,18 @@ import myContext from '../../context/data/myContext';
 
 function Filter() {
     const context = useContext(myContext);
-    const { mode, searchkey, setSearchkey, filterType, setFilterType, filterPrice, setFilterPrice, product } = context;
+    const { mode, searchkey, setSearchkey, filterType, setFilterType, filterPrice, setFilterPrice } = context;
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    // Predefined categories
+    const categories = ["Pashmina", "Aari", "Other"];
+
+    // Reset Filter Function
+    const resetFilters = () => {
+        setSearchkey("");
+        setFilterType("");
+        setFilterPrice("");
+    };
 
     return (
         <div className='container mx-auto px-4 mt-5'>
@@ -13,13 +23,16 @@ function Filter() {
                     backgroundColor: mode === 'dark' ? '#282c34' : '',
                     color: mode === 'dark' ? 'white' : '',
                 }}>
-                
+
                 {/* Toggle Button */}
                 <div className="flex items-center justify-between">
                     <p className="font-medium">Filters</p>
-                    <button 
-                        className="px-4 py-2 bg-gray-50 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md"
-                        style={{ color: mode === 'dark' ? 'white' : '' }}
+                    <button
+                        className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-300 ${
+                            mode === 'dark' 
+                            ? 'bg-gray-800 hover:bg-gray-700 text-white' 
+                            : 'bg-gray-50 hover:bg-gray-200 text-gray-800'
+                        }`}
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
                     >
                         {isFilterOpen ? 'Hide Filters ▲' : 'Show Filters ▼'}
@@ -42,7 +55,7 @@ function Filter() {
                                 value={searchkey}
                                 onChange={(e) => setSearchkey(e.target.value)}
                                 id="searchkey"
-                                placeholder="Search here"
+                                placeholder="Search by product name..."
                                 className="px-8 py-3 w-full rounded-md border-transparent outline-0 text-sm"
                                 style={{
                                     backgroundColor: mode === 'dark' ? 'rgb(64 66 70)' : '',
@@ -53,25 +66,40 @@ function Filter() {
 
                         {/* Filter Options */}
                         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+                            {/* Category Filter */}
                             <select 
                                 value={filterType} 
                                 onChange={(e) => setFilterType(e.target.value)} 
                                 className="px-4 py-3 w-full rounded-md bg-gray-50 border-transparent outline-0 focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
-                                style={{ backgroundColor: mode === 'dark' ? 'rgb(64 66 70)' : '', color: mode === 'dark' ? 'white' : '', }}>
-                                {product.map((item, index) => (
-                                    <option key={index} value={item.category}>{item.category}</option>
+                                style={{ backgroundColor: mode === 'dark' ? 'rgb(64 66 70)' : '', color: mode === 'dark' ? 'white' : '', }}
+                            >
+                                <option value="">All Categories</option>
+                                {categories.map((category, index) => (
+                                    <option key={index} value={category}>{category}</option>
                                 ))}
                             </select>
 
+                            {/* Price Filter */}
                             <select 
                                 value={filterPrice} 
                                 onChange={(e) => setFilterPrice(e.target.value)} 
                                 className="px-4 py-3 w-full rounded-md bg-gray-50 border-transparent outline-0 focus:border-gray-500 focus:bg-white focus:ring-0 text-sm"
-                                style={{ backgroundColor: mode === 'dark' ? 'rgb(64 66 70)' : '', color: mode === 'dark' ? 'white' : '', }}>
-                                {product.map((item, index) => (
-                                    <option key={index} value={item.price}>{item.price}</option>
-                                ))}
+                                style={{ backgroundColor: mode === 'dark' ? 'rgb(64 66 70)' : '', color: mode === 'dark' ? 'white' : '', }}
+                            >
+                                <option value="">All Prices</option>
+                                <option value="low">Low to High</option>
+                                <option value="high">High to Low</option>
                             </select>
+                        </div>
+
+                        {/* Reset Button */}
+                        <div className="mt-4 text-right">
+                            <button 
+                                onClick={resetFilters}
+                                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+                            >
+                                Reset Filters
+                            </button>
                         </div>
                     </div>
                 )}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   BrowserRouter as Router,
   Route,
@@ -20,6 +20,12 @@ import UpdateProduct from './pages/admin/page/UpdateProduct';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Allproducts from './pages/allproducts/Allproducts';
+
+// Import Footer Components (Located in src/components/footer)
+import ReturnPolicy from './components/Policies/ReturnPolicy';
+import About from './components/Policies/About';
+import Contact from './components/Policies/Contact';
+
 function App() {
   return (
     <MyState>
@@ -34,50 +40,53 @@ function App() {
           } />
           <Route path="/cart" element={<Cart />} />
           <Route path="/dashboard" element={
-             <ProtectedRouteForAdmin>
+            <ProtectedRouteForAdmin>
               <Dashboard />
-             </ProtectedRouteForAdmin>
+            </ProtectedRouteForAdmin>
           } />
-          <Route path='/login' element={<Login/>} />
-          <Route path='/signup' element={<Signup/>} />
-          <Route path='/productinfo/:id' element={<ProductInfo/>} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/productinfo/:id' element={<ProductInfo />} />
           <Route path='/addproduct' element={
-             <ProtectedRouteForAdmin>
-              <AddProduct/>
-             </ProtectedRouteForAdmin>
+            <ProtectedRouteForAdmin>
+              <AddProduct />
+            </ProtectedRouteForAdmin>
           } />
           <Route path='/updateproduct' element={
             <ProtectedRouteForAdmin>
-              <UpdateProduct/>
+              <UpdateProduct />
             </ProtectedRouteForAdmin>
           } />
+          
+          {/* Newly Added Routes for Footer Pages */}
+          <Route path="/returnpolicy" element={<ReturnPolicy />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+
           <Route path="/*" element={<NoPage />} />
         </Routes>
-        <ToastContainer/>
+        <ToastContainer />
       </Router>
     </MyState>
-
   )
 }
 
-export default App 
+export default App;
 
-// user 
-
-export const ProtectedRoute = ({children}) => {
-  const user = localStorage.getItem('user')
-  if(user){
-    return children
-  }else{
-    return <Navigate to={'/login'}/>
+// Protected Route for User
+export const ProtectedRoute = ({ children }) => {
+  const user = localStorage.getItem('user');
+  if (user) {
+    return children;
+  } else {
+    return <Navigate to={'/login'} />;
   }
 }
 
-// admin 
-
+// Protected Route for Admin
 const ProtectedRouteForAdmin = ({ children }) => {
   const user = JSON.parse(localStorage.getItem('user'));
-console.log(user,"correct");
+  console.log(user, "correct");
   if (user && user.role === 'admin') {
     return children;
   } else {
