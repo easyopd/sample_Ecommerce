@@ -20,6 +20,7 @@ import UpdateProduct from './pages/admin/page/UpdateProduct';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Allproducts from './pages/allproducts/Allproducts';
+import Privacy from './components/Policies/privacy';
 
 // Import Footer Components (Located in src/components/footer)
 import ReturnPolicy from './components/Policies/ReturnPolicy';
@@ -62,7 +63,7 @@ function App() {
           <Route path="/returnpolicy" element={<ReturnPolicy />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-
+          <Route path="/privacypolicy" element={<Privacy />} />
           <Route path="/*" element={<NoPage />} />
         </Routes>
         <ToastContainer />

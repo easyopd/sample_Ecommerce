@@ -94,7 +94,9 @@ function Allproducts() {
                                                             e.stopPropagation();
                                                             addCart(item);
                                                         }}
-                                                        className="focus:outline-none text-white bg-blue-600 hover:bg-pink-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm w-full py-2">
+                                                        className="focus:outline-none text-white bg-blue-600 hover:bg-pink-700 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm w-full py-2"
+                                                        style={{ backgroundColor: '#22333B' }}
+>
                                                         Add To Cart
                                                     </button>
                                                 </div>

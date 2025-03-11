@@ -91,8 +91,11 @@ function ProductCard({ products, searchkey = "", filterType = "", filterPrice = 
                       onClick={(e) => addCart(e, item)}
                       disabled={quantity <= 0} // ✅ Disable button if out of stock
                       className={`focus:outline-none text-white font-medium rounded-lg text-sm w-full py-2 transition-transform duration-300 ease-in-out hover:scale-110 ${
-                        quantity > 0 ? "bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300" : "bg-gray-500 cursor-not-allowed"
-                      }`}
+                        quantity > 0 ? "hover:bg-blue-700 focus:ring-4 focus:ring-blue-300" : "bg-gray-500 cursor-not-allowed"
+                      }`
+                    }
+                    style={{ backgroundColor: '#22333B' }}
+
                     >
                       {quantity > 0 ? "Add To Cart" : "Out of Stock"}
                     </button>

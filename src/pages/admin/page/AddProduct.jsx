@@ -3,6 +3,7 @@ import axios from 'axios';
 import myContext from '../../../context/data/myContext';
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Layout from '../../../components/layout/Layout';
 
 const AddProduct = () => {
   const { addProduct } = useContext(myContext);
@@ -82,6 +83,7 @@ const AddProduct = () => {
   };
 
   return (
+    <Layout>
     <form onSubmit={handleSubmit} className="flex justify-center items-center h-screen p-4">
       <div className="bg-gray-800 px-10 py-10 rounded-xl w-full max-w-md">
         <h1 className="text-center text-white text-xl mb-4 font-bold">Add Product</h1>
@@ -112,6 +114,7 @@ const AddProduct = () => {
         <button type="submit" className="bg-yellow-500 w-full text-black font-bold px-2 py-2 rounded-lg">Add Product</button>
       </div>
     </form>
+    </Layout>
   );
 };
 

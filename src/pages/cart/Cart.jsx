@@ -12,6 +12,7 @@ import axios from "axios";
 function Cart() {
   const context = useContext(myContext);
   const { mode } = context;
+  const user = localStorage.getItem("user");
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart);
@@ -48,6 +49,11 @@ function Cart() {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const buyNow = async () => {
+
+    if (!user) {
+      return toast.error("You must be logged in to make a purchase.");
+    }
+
     if (!name || !address || !pincode || !phoneNumber) {
       return toast.error("All fields are required");
     }

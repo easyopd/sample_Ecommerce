@@ -24,11 +24,11 @@ function Navbar() {
 
   return (
     <div className='sticky top-0 z-50 w-full'>
-      <header className="relative bg-blue-1000">
+      <header className="relative bg-#22333B-1000">
         <nav
           className="px-4 sm:px-6 lg:px-8 shadow-xl flex items-center justify-between"
           style={{
-            backgroundColor: mode === 'dark' ? 'black' : 'blue', // Black in dark mode, blue in light mode
+            backgroundColor: mode === 'dark' ? 'black' : '#22333B', // Black in dark mode, #22333B in light mode
             color: mode === 'dark' ? 'white' : 'black', // White text in dark mode, black text in light mode
           }}
           
@@ -37,7 +37,7 @@ function Navbar() {
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className="lg:hidden rounded-md p-2 text-gray-400"
+            className="lg:hidden rounded-md p-2 text-gray-400 "
             onClick={() => setOpen(true)}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -49,14 +49,15 @@ function Navbar() {
           <Link to={'/'} className='flex items-center space-x-3'>
             <img src="/images/logo1.PNG" alt="Logo" className="w-14 h-14 rounded-full object-cover" />
             <h1
-              className="text-3xl font-bold text-white"
-              style={{
-                fontFamily: "'Merriweather', serif", // Professional font
-                letterSpacing: '1px' // Slight spacing for elegance
-              }}
-            >
-              HUNAR-Pashmina
-            </h1>
+                className="text-2xl font-bold text-white"
+                style={{
+                  fontFamily: "'Lobster', cursive",
+                  letterSpacing: "1px", // Slight spacing for elegance
+                }}
+              >
+                Hunar-Pashmina
+              </h1>
+
           </Link>
 
           {/* Desktop Menu */}
@@ -122,7 +123,7 @@ function Navbar() {
             >
               <Dialog.Panel className="relative flex w-full max-w-xs flex-col bg-white shadow-xl p-5">
                 <button onClick={() => setOpen(false)} className="self-end p-2"><RxCross2 size={24} /></button>
-                <Link to={'/allproducts'}>All Products</Link>
+                <Link to={'/allproducts'}className='py-3'>All Products</Link>
                 {user ? <Link to={'/order'}>Order</Link> : <Link to={'/signup'}>Signup</Link>}
                 {user?.user?.email === 'knupadhyay784@gmail.com' && <Link to={'/dashboard'}>Admin</Link>}
                 {user && <a onClick={logout}>Logout</a>}

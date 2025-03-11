@@ -9,7 +9,7 @@ function HeroSection() {
     "/images/carosel2.jpg",
     "/images/carosel3.jpg",
     "/images/carosel4.jpg",
-    "/images/carosel5.jpg",
+    "/images/handmade.jpg",
   ];
 
   const settings = {
@@ -19,7 +19,7 @@ function HeroSection() {
     slidesToShow: 1, // Show one image at a time
     slidesToScroll: 1,
     autoplay: true, // Auto slide
-    autoplaySpeed: 3000, // 3 seconds per slide
+    autoplaySpeed: 2000, // 3 seconds per slide
     arrows: true, // Show prev/next buttons
     fade: true, // Smooth fade transition
   };

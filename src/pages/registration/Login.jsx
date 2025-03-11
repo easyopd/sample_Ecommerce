@@ -86,45 +86,62 @@ function Login() {
   return (
     <div className="flex justify-center items-center h-screen">
       {loading && <Loader />}
-      <div className="bg-gray-800 px-10 py-10 rounded-xl">
-        <h1 className="text-center text-white text-xl mb-4 font-bold">Login</h1>
+      <div className={"login_Form bg-gray-800 px-8 py-6 border border-dark-100 rounded-xl shadow-md ${mode === 'dark' ? 'text-white' : 'text-black'}"}>
 
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder-gray-200 outline-none"
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="bg-gray-600 mb-4 px-2 py-2 w-full lg:w-[20em] rounded-lg text-white placeholder-gray-200 outline-none"
-          placeholder="Password"
-        />
+        <div className="mb-5">
+          <h2 className="text-center text-2xl font-bold text-white">
+            Login
+          </h2>
+        </div>
 
-        <button
-          onClick={loginWithEmail}
-          className="bg-yellow-500 w-full text-black font-bold px-2 py-2 rounded-lg mb-3"
-        >
-          Login
-        </button>
+        <div className="mb-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-black-50 border border-black-200 px-2 py-2 w-96 rounded-md outline-none placeholder-black-200"
+            placeholder="Email Address"
+          />
+        </div>
 
-        {/* ✅ Google Login Button */}
-        <button
-          onClick={loginWithGoogle}
-          className="bg-red-500 w-full text-white font-bold px-2 py-2 rounded-lg mb-3"
-        >
-          Login with Google
-        </button>
+        <div className="mb-5">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-black-50 border border-black-200 px-2 py-2 w-96 rounded-md outline-none placeholder-black-200"
+            placeholder="Password"
+          />
+        </div>
 
-        <h2 className="text-white">
-          Don't have an account?{" "}
-          <Link className="text-yellow-500 font-bold" to={"/signup"}>
-            Signup
-          </Link>
-        </h2>
+        <div className="mb-5">
+          <button
+            onClick={loginWithEmail}
+            className="bg-black-500 hover:bg-black-600 w-full text-white text-center py-2 font-bold rounded-md"
+          >
+            Login
+          </button>
+        </div>
+
+        <div className="mb-5">
+          <button
+            onClick={loginWithGoogle}
+            className="bg-white hover:bg-white w-full text-white text-center py-2 font-bold rounded-md"
+          >
+           <img src="/images/google.png" alt="" className="w-10 h-10 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"/>
+
+          </button>
+        </div>
+
+        <div>
+          <h2 className="text-white">
+            Don't have an account?{" "}
+            <Link className="text-black-500 font-bold" to={"/signup"}>
+              Signup
+            </Link>
+          </h2>
+        </div>
+
       </div>
     </div>
   );
