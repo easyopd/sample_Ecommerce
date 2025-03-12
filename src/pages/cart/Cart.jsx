@@ -8,10 +8,13 @@ import { toast } from 'react-toastify';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore'; // ✅ Import Firestore update functions
 import { fireDB } from '../../fireabase/FirebaseConfig';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 function Cart() {
   const context = useContext(myContext);
   const { mode } = context;
+  const navigate=useNavigate();
+  const user = localStorage.getItem('user');
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart);
@@ -47,7 +50,10 @@ function Cart() {
   const [pincode, setPincode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
+  
   const buyNow = async () => {
+    if(user){
+      
     if (!name || !address || !pincode || !phoneNumber) {
       return toast.error("All fields are required");
     }
@@ -106,13 +112,21 @@ function Cart() {
         theme: { color: "#3399cc" },
       };
     
-      console.log("🛒 Initializing Razorpay Checkout...");
-      const rzp = new window.Razorpay(options);
+     // console.log("🛒 Initializing Razorpay Checkout...");
+      
+        const rzp = new window.Razorpay(options);
+      
       rzp.open();
     } catch (error) {
-      console.error("❌ Order API Error:", error);
+     // console.error("❌ Order API Error:", error);
       toast.error("Failed to create order. Please try again.");
     }
+  }else{
+    
+      toast.error("Please login first");
+      navigate("/login")
+    
+  }
   };
   
   // ✅ Function to Verify Payment & Deduct Quantity
