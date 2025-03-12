@@ -12,7 +12,6 @@ import axios from "axios";
 function Cart() {
   const context = useContext(myContext);
   const { mode } = context;
-  const user = localStorage.getItem("user");
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart);
@@ -49,15 +48,11 @@ function Cart() {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const buyNow = async () => {
-
-    if (!user) {
-      return toast.error("You must be logged in to make a purchase.");
-    }
-
     if (!name || !address || !pincode || !phoneNumber) {
       return toast.error("All fields are required");
     }
-  
+    
+    // ✅ Construct Address Info
     const addressInfo = {
       name,
       address,
@@ -69,73 +64,88 @@ function Cart() {
         year: "numeric",
       }),
     };
-
-    // ✅ Check if any product is out of stock
+    
+    // ✅ Check for Out of Stock Products
     const outOfStock = cartItems.some((item) => item.quantity <= 0);
     if (outOfStock) {
       return toast.error("Some products are out of stock. Please update your cart.");
     }
-
+    
     try {
       // ✅ Call Firebase Cloud Function to Create Order
+      console.log("🔄 Creating Order...");
       const orderResponse = await axios.post(
         "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/createOrder",
         { amount: grandTotal }
       );
-  
+    
+      console.log("✅ Order Created:", orderResponse.data); // Log complete response
+    
+      // ✅ Extract Order ID, Amount, and Currency
       const { id: orderId, amount, currency } = orderResponse.data;
-  
+      console.log("🎯 Order ID from API:", orderId);
+    
       const options = {
-        key: "rzp_live_m1KjRaIiXqwMu5", // ✅ Replace with your Razorpay Live Key
+        key: "rzp_live_m1KjRaIiXqwMu5", // ✅ Replace with Live Key when going live
         amount: amount,
         currency: currency,
         order_id: orderId,
         name: "Hunar-Pashmina",
         description: "Order Payment",
         handler: async function (response) {
+          console.log("✅ Razorpay Payment Response:", response);
           try {
-            // ✅ Verify Payment & Deduct Quantity
+            console.log("🔄 Sending Payment for Verification...");
             await verifyPayment(orderId, response.razorpay_payment_id, addressInfo);
+            console.log("✅ Payment Verified Successfully!");
           } catch (error) {
-            console.error("Payment Verification Failed:", error);
+            console.error("❌ Payment Verification Failed:", error);
             toast.error("Payment verification failed.");
           }
         },
         theme: { color: "#3399cc" },
       };
-  
+    
+      console.log("🛒 Initializing Razorpay Checkout...");
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
-      console.error("Order API Error:", error);
+      console.error("❌ Order API Error:", error);
       toast.error("Failed to create order. Please try again.");
     }
   };
   
   // ✅ Function to Verify Payment & Deduct Quantity
   const verifyPayment = async (orderId, paymentId, addressInfo) => {
+    //console.log(paymentId,orderId,addressInfo," checking verify payment ");
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       const email = user?.email || "no-email@provided.com"; // Get user email
+      
       const orderDetails = cartItems.map((item) => ({
         title: item.title,
         price: item.price,
         quantity: item.quantity,
         productId: item.id, // ✅ Store product ID for quantity update
       }));
+      //console.log(orderDetails," checking order details");
   
       // ✅ Call Firebase Cloud Function to Verify Payment & Send Email
-      const verifyResponse = await axios.post(
-        "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/verifyPayment",
-        {
-          order_id: orderId,
-          payment_id: paymentId,
-          email,
-          addressInfo,
-          orderDetails,
-        }
-      );
-  
+      
+        const verifyResponse = await axios.post(
+          "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/verifyPayment",
+          {
+            order_id: orderId,
+            payment_id: paymentId,
+            email,
+            addressInfo,
+            orderDetails,
+          }
+        );
+        // Check the response data here
+      
+      
+    
       if (verifyResponse.data.success) {
         toast.success("Payment verified successfully! Email Sent.");
   

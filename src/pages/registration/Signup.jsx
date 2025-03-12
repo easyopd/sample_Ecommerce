@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } f
 import { auth, fireDB } from "../../fireabase/FirebaseConfig";
 import { Timestamp, setDoc, doc, getDoc } from "firebase/firestore";
 import Loader from "../../components/loader/Loader";
+import Layout from "../../components/layout/Layout";
 
 function Signup() {
   const [name, setName] = useState("");
@@ -94,6 +95,7 @@ function Signup() {
   };
 
   return (
+    <Layout>
     <div className="flex justify-center items-center h-screen ">
       {loading && <Loader />}
       <div className="login_Form bg-gray-800 px-8 py-6 border border-black-100 rounded-xl shadow-md">
@@ -157,6 +159,7 @@ function Signup() {
         </div>
       </div>
     </div>
+    </Layout>
   );
 }
 

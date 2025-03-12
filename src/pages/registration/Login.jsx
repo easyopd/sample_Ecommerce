@@ -6,6 +6,7 @@ import { auth, fireDB, googleProvider } from "../../fireabase/FirebaseConfig";
 import { toast } from "react-toastify";
 import Loader from "../../components/loader/Loader";
 import { query, collection, where, getDocs, setDoc, doc, serverTimestamp } from "firebase/firestore";
+import Layout from "../../components/layout/Layout";
 
 function Login() {
   const context = useContext(myContext);
@@ -84,6 +85,7 @@ function Login() {
   };
 
   return (
+    <Layout>
     <div className="flex justify-center items-center h-screen">
       {loading && <Loader />}
       <div className={"login_Form bg-gray-800 px-8 py-6 border border-dark-100 rounded-xl shadow-md ${mode === 'dark' ? 'text-white' : 'text-black'}"}>
@@ -144,6 +146,7 @@ function Login() {
 
       </div>
     </div>
+    </Layout>
   );
 }
 

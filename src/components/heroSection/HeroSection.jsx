@@ -6,10 +6,13 @@ import "slick-carousel/slick/slick-theme.css";
 function HeroSection() {
   const images = [
     "/images/carosel1.jpg",
-    "/images/carosel2.jpg",
+    "/images/carosel2.jpeg",
+    "/images/carosel6.jpeg",
     "/images/carosel3.jpg",
     "/images/carosel4.jpg",
     "/images/handmade.jpg",
+    
+    
   ];
 
   const settings = {
@@ -19,7 +22,7 @@ function HeroSection() {
     slidesToShow: 1, // Show one image at a time
     slidesToScroll: 1,
     autoplay: true, // Auto slide
-    autoplaySpeed: 2000, // 3 seconds per slide
+    autoplaySpeed: 3000, // 3 seconds per slide
     arrows: true, // Show prev/next buttons
     fade: true, // Smooth fade transition
   };
@@ -32,7 +35,7 @@ function HeroSection() {
             <img
               src={src}
               alt={`Slide ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-fill"
             />
 
           </div>

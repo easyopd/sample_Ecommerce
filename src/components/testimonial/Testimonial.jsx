@@ -17,7 +17,7 @@ function Testimonial() {
                                 <p style={{ color: mode === 'dark' ? 'white' : '' }} className="leading-relaxed">"I am absolutely in love with my Pashmina shawl! The quality is outstanding, and the fabric is so soft and warm. It feels luxurious yet lightweight, making it perfect for any occasion. The intricate craftsmanship is truly a work of art.
                                      I received so many compliments, and I can’t wait to order more. Highly recommended!"</p>
                                 <span className="inline-block h-1 w-10 rounded bg-pink-500 mt-6 mb-4" />
-                                <h2 style={{ color: mode === 'dark' ? '#ff4162' : '' }} className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Soliha</h2>
+                                <h2 style={{ color: mode === 'dark' ? '#ff4162' : '' }} className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Soliha Showkat</h2>
                                 
                             </div>
                         </div>

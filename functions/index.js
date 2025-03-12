@@ -51,14 +51,31 @@ exports.createOrder = functions.https.onRequest(async (req, res) => {
 exports.verifyPayment = functions.https.onRequest(async (req, res) => {
   corsHandler(req, res, async () => {
     try {
+      console.log("🔥 Received Payment Verification Request");
+      console.log("📥 Request Body:", JSON.stringify(req.body, null, 2));
+
       const { order_id, payment_id, email, orderDetails, addressInfo } = req.body;
+
+      if (!order_id) {
+        console.warn("⚠️ Missing order_id");
+      }
+      if (!addressInfo) {
+        console.warn("⚠️ Missing addressInfo");
+      }
       if (!order_id || !payment_id || !email || !addressInfo) {
+        console.error("❌ Missing required fields:", {
+          order_id,
+          payment_id,
+          email,
+          addressInfo,
+        });
         return res.status(400).json({ error: "Missing required fields" });
       }
 
       const razorpayKeySecret = functions.config().razorpay.secret;
 
       // ✅ Verify Payment with Razorpay
+      console.log(`🔄 Fetching Payment Status from Razorpay for Payment ID: ${payment_id}`);
       const response = await axios.get(
         `https://api.razorpay.com/v1/payments/${payment_id}`,
         {
@@ -69,37 +86,48 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
         }
       );
 
+      console.log("✅ Full Razorpay Response:", JSON.stringify(response.data, null, 2));
+      console.log(`🔍 Checking Payment Status: ${response.data.status}`);
+      console.log(`🔍 Checking order_id in response: ${response.data.order_id}`);
+      console.log(`🔍 Expected order_id: ${order_id}`);
+
       if (response.data.status === "captured" && response.data.order_id === order_id) {
         const db = admin.firestore();
 
+        console.log("✅ Payment Verified! Updating stock...");
+
         // ✅ Update Stock for Each Purchased Item
+        console.log("📦 Order Details Received:", JSON.stringify(orderDetails, null, 2));
+
         for (const item of orderDetails) {
-          const productRef = db.collection("products").doc(item.id);
+          console.log(`🔄 Updating stock for Product ID: ${item.productId}, Title: ${item.title}`);
+          const productRef = db.collection("products").doc(item.productId);
           const productDoc = await productRef.get();
 
           if (!productDoc.exists) {
-            console.warn(`Product with ID ${item.id} not found`);
+            console.warn(`⚠️ Product with ID ${item.productId} not found in Firestore!`);
             continue;
           }
 
           const productData = productDoc.data();
-          const newQuantity = productData.quantity - 1; // ✅ Reduce stock by 1 per purchase
+          const newQuantity = productData.quantity - 1;
 
           if (newQuantity < 0) {
-            console.warn(`Stock for ${item.title} is already 0!`);
-            continue; // Prevents overselling
+            console.warn(`⚠️ Stock for ${item.title} is already 0! Skipping update.`);
+            continue;
           }
 
           await productRef.update({ quantity: newQuantity });
-          console.log(`Stock updated for ${item.title}: ${newQuantity} remaining`);
+          console.log(`✅ Stock updated for ${item.title}: ${newQuantity} remaining`);
         }
 
         // ✅ Save Payment Info in Firestore
+        console.log(`💾 Storing Payment Details in Firestore for Payment ID: ${payment_id}`);
         await db.collection("payments").doc(payment_id).set({
           order_id,
           payment_id,
           email,
-          amount: response.data.amount / 100, // Convert back to INR
+          amount: response.data.amount / 100, // Convert from paise to INR
           status: "Paid",
           orderDetails,
           addressInfo,
@@ -118,9 +146,11 @@ exports.verifyPayment = functions.https.onRequest(async (req, res) => {
             <h3>📦 Order Details:</h3>
             <ul>
               ${orderDetails.map(item => `<li>${item.title} - ₹${item.price}</li>`).join("")}
+              
             </ul>
 
             <h3>🏠 Shipping Address:</h3>
+            <p><b>Order ID:</b> ${order_id}</p>
             <p><b>Name:</b> ${addressInfo.name}</p>
             <p><b>Address:</b> ${addressInfo.address}</p>
             <p><b>Pincode:</b> ${addressInfo.pincode}</p>

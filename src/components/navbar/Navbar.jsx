@@ -13,7 +13,6 @@ function Navbar() {
   const { mode, toggleMode } = context;
   const [open, setOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user'));
-  //console.log("User details are stored successfully:", user);
   const cartItems = useSelector((state) => state.cart);
   const navigate = useNavigate();
 
@@ -28,16 +27,14 @@ function Navbar() {
         <nav
           className="px-4 sm:px-6 lg:px-8 shadow-xl flex items-center justify-between"
           style={{
-            backgroundColor: mode === 'dark' ? 'black' : '#22333B', // Black in dark mode, #22333B in light mode
-            color: mode === 'dark' ? 'white' : 'black', // White text in dark mode, black text in light mode
+            backgroundColor: mode === 'dark' ? 'black' : '#22333B',
+            color: mode === 'dark' ? 'white' : 'black',
           }}
-          
         >
-
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className="lg:hidden rounded-md p-2 text-gray-400 "
+            className="lg:hidden rounded-md p-2 text-gray-400"
             onClick={() => setOpen(true)}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -49,15 +46,14 @@ function Navbar() {
           <Link to={'/'} className='flex items-center space-x-3'>
             <img src="/images/logo1.PNG" alt="Logo" className="w-14 h-14 rounded-full object-cover" />
             <h1
-                className="text-2xl font-bold text-white"
-                style={{
-                  fontFamily: "'Lobster', cursive",
-                  letterSpacing: "1px", // Slight spacing for elegance
-                }}
-              >
-                Hunar-Pashmina
-              </h1>
-
+              className="text-2xl font-bold text-white"
+              style={{
+                fontFamily: "'Lobster', cursive",
+                letterSpacing: "1px",
+              }}
+            >
+              Hunar Pashmina
+            </h1>
           </Link>
 
           {/* Desktop Menu */}
@@ -67,19 +63,18 @@ function Navbar() {
             {user ? (
               <>
                 <Link to={'/order'} className="text-sm font-medium text-white">Order</Link>
-
-                {/* Check if user is an admin before showing the Dashboard link */}
                 {user?.role === 'admin' && (
                   <Link to={'/dashboard'} className="text-sm font-medium text-white">Admin</Link>
                 )}
-
                 <a onClick={logout} className="text-sm font-medium text-white cursor-pointer">Logout</a>
               </>
             ) : (
-              <Link to={'/signup'} className="text-sm font-medium text-white">Signup</Link>
+              <>
+                <Link to={'/signup'} className="text-sm font-medium text-white">Signup</Link>
+                <Link to={'/login'} className="text-sm font-medium text-white">Login</Link>
+              </>
             )}
           </div>
-
 
           {/* Theme Toggle & Cart */}
           <div className="flex items-center space-x-4">
@@ -123,10 +118,20 @@ function Navbar() {
             >
               <Dialog.Panel className="relative flex w-full max-w-xs flex-col bg-white shadow-xl p-5">
                 <button onClick={() => setOpen(false)} className="self-end p-2"><RxCross2 size={24} /></button>
-                <Link to={'/allproducts'}className='py-3'>All Products</Link>
-                {user ? <Link to={'/order'}>Order</Link> : <Link to={'/signup'}>Signup</Link>}
-                {user?.user?.email === 'knupadhyay784@gmail.com' && <Link to={'/dashboard'}>Admin</Link>}
-                {user && <a onClick={logout}>Logout</a>}
+                <Link to={'/allproducts'} className='py-3'>All Products</Link>
+                
+                {user ? (
+                  <>
+                    <Link to={'/order'} className="py-3">Order</Link>
+                    {user?.role === 'admin' && <Link to={'/dashboard'} className="py-3">Admin</Link>}
+                    <a onClick={logout} className="py-3 cursor-pointer">Logout</a>
+                  </>
+                ) : (
+                  <>
+                    <Link to={'/signup'} className="py-3">Signup</Link>
+                    <Link to={'/login'} className="py-3">Login</Link>
+                  </>
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
