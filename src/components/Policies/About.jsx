@@ -1,27 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Layout from '../layout/Layout';
 import myContext from '../../context/data/myContext';
-import  { useContext } from 'react';
-
 
 function About() {
-      const { mode } = useContext(myContext);
-  
+  const { mode } = useContext(myContext);
+
   return (
-    <Layout><div className={` container mx-auto px-4 py-10 text-3xl title-font font-medium mb-1 ${mode === 'dark' ? 'text-white' : 'text-black'}`}>
-      <h1 className="text-3xl font-bold text-center mb-6">About Us</h1>
-      <p className="text-lg">
-        Welcome to Hunar-Pashmina! We specialize in providing authentic, high-quality 
-        Pashmina and Aari work products. Our mission is to preserve the heritage of 
-        traditional Kashmiri craftsmanship and make it accessible to the world.
-      </p>
-      <p className="mt-4">
-        Every piece we sell is handcrafted by skilled artisans with generations of 
-        expertise. We are committed to fair trade practices, ensuring that our 
-        artisans receive fair wages for their beautiful work.
-      </p>
-      <p className="mt-4">Thank you for supporting handmade and sustainable fashion!</p>
-    </div>
+    <Layout>
+      <div className={`container mx-auto px-6 py-12 rounded-lg shadow-lg ${mode === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
+        <h1 className="text-4xl font-extrabold text-center mb-6">About Us</h1>
+        
+        <p className="text-lg text-center max-w-2xl mx-auto">
+          Welcome to <strong>Hunar Pashmina</strong>! We specialize in providing <span className="font-semibold">authentic, high-quality Pashmina</span> and <span className="font-semibold">Aari work</span> products. 
+          Our mission is to preserve the rich heritage of Kashmiri craftsmanship and share it with the world.
+        </p>
+
+        <div className="max-w-2xl mx-auto mt-6 space-y-4">
+          <p className="text-lg">
+            Every piece we offer is <span className="font-semibold">handcrafted</span> by skilled artisans who have honed their craft for generations. 
+            We take pride in keeping this tradition alive while ensuring the highest quality.
+          </p>
+
+          <p className="text-lg">
+            <strong>Fair Trade & Sustainability:</strong> We are committed to ethical business practices, ensuring that our artisans receive <span className="font-semibold">fair wages</span> for their beautiful work.
+          </p>
+        </div>
+
+        <p className="text-lg text-center mt-6 font-semibold">
+          Thank you for supporting <span className="text-blue-500">handmade</span> and <span className="text-green-500">sustainable fashion</span>! 🌿
+        </p>
+      </div>
     </Layout>
   );
 }

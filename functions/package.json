@@ -19,7 +19,8 @@
     "firebase-admin": "^12.7.0",
     "firebase-functions": "^6.3.2",
     "nodemailer": "^6.10.0",
-    "razorpay": "^2.9.6"
+    "razorpay": "^2.9.6",
+    "xml": "^1.0.1"
   },
   "devDependencies": {
     "eslint": "^8.15.0",

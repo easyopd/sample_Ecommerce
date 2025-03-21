@@ -234,7 +234,7 @@ function Cart() {
             })}
           </div>
 
-          <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3 transition-transform duration-1000 ease-in-out hover:scale-110">
+          <div className="mt-6 h-full rounded-lg border bg-gray p-6 shadow-md md:mt-0 md:w-1/3 transition-transform duration-1000 ease-in-out hover:scale-110">
             <p className="text-lg font-bold">Total: ₹{grandTotal}</p>
             <Modal name={name} address={address} pincode={pincode} phoneNumber={phoneNumber} setName={setName} setAddress={setAddress} setPincode={setPincode} setPhoneNumber={setPhoneNumber} buyNow={buyNow} />
           </div>

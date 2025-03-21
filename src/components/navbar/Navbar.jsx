@@ -46,9 +46,9 @@ function Navbar() {
           <Link to={'/'} className='flex items-center space-x-3'>
             <img src="/images/logo1.PNG" alt="Logo" className="w-14 h-14 rounded-full object-cover" />
             <h1
-              className="text-2xl font-bold text-white"
+              className="text-4xl font-audiowide text-white"
               style={{
-                fontFamily: "'Lobster', cursive",
+                // fontFamily: "'Lobster', cursive",
                 letterSpacing: "1px",
               }}
             >

@@ -5,6 +5,7 @@ const axios = require("axios");
 const cors = require("cors"); // ✅ Import CORS
 const nodemailer = require("nodemailer"); // ✅ Import Nodemailer
 
+
 admin.initializeApp();
 const corsHandler = cors({ origin: true }); // ✅ Allow all origins
 
@@ -22,6 +23,9 @@ const razorpay = new Razorpay({
   key_id: functions.config().razorpay.key_id,
   key_secret: functions.config().razorpay.secret,
 });
+
+//creating function for sitemap
+
 
 // ✅ Create Order Function (with CORS)
 exports.createOrder = functions.https.onRequest(async (req, res) => {

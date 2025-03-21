@@ -119,7 +119,7 @@ function Login() {
         <div className="mb-5">
           <button
             onClick={loginWithEmail}
-            className="bg-black-500 hover:bg-black-600 w-full text-white text-center py-2 font-bold rounded-md"
+            className="bg-sky-200 hover:bg-sky-500 w-full text-black text-center py-2 font-bold rounded-md"
           >
             Login
           </button>

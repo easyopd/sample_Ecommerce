@@ -92,7 +92,7 @@ function ProductInfo() {
                                     <button
                                         onClick={() => addCart(product)}
                                         className="flex ml-auto text-white bg-blue-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded transition-transform duration-500 ease-in-out hover:scale-105"
-                                        style={{ backgroundColor: '#22333B' }}
+                                        style={{ backgroundColor: mode === "dark" ? 'gray' :'#22333B' }}
 
                                     >
                                         Add To Cart

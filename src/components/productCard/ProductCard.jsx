@@ -94,7 +94,7 @@ function ProductCard({ products, searchkey = "", filterType = "", filterPrice = 
                         quantity > 0 ? "hover:bg-blue-700 focus:ring-4 focus:ring-blue-300" : "bg-gray-500 cursor-not-allowed"
                       }`
                     }
-                    style={{ backgroundColor: '#22333B' }}
+                    style={{ backgroundColor: mode === "dark" ? 'gray' :'#22333B' }}
 
                     >
                       {quantity > 0 ? "Add To Cart" : "Out of Stock"}
