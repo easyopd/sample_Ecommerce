@@ -46,7 +46,7 @@ function Signup() {
       toast.success("Signup Successful!");
       navigate("/");
     } catch (error) {
-      console.error("Signup Error:", error);
+      
       toast.error(error.message || "Signup failed.");
     } finally {
       setLoading(false);
@@ -87,7 +87,7 @@ function Signup() {
       toast.success("Google Signup Successful!");
       navigate("/");
     } catch (error) {
-      console.error("Google Signup Error:", error);
+     
       toast.error(error.message || "Google Signup failed.");
     } finally {
       setLoading(false);
@@ -96,69 +96,71 @@ function Signup() {
 
   return (
     <Layout>
-    <div className="flex justify-center items-center h-screen ">
-      {loading && <Loader />}
-      <div className="login_Form bg-gray-800 px-8 py-6 border border-black-100 rounded-xl shadow-md">
-        <h1 className="text-center text-2xl font-bold text-white p-3">Signup</h1>
+      <div className="flex justify-center items-center h-screen ">
+        {loading && <Loader />}
+        <div className="login_Form bg-gray-800 px-8 py-6 border border-black-100 rounded-xl shadow-md">
+          <h1 className="text-center text-2xl font-bold text-white p-3">Signup</h1>
 
-        <div className="mb-3">
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="bg-black-50 border border-black-200 px-2 py-2 w-96 rounded-md outline-none placeholder-black-200"
-            placeholder="Name"
-          />
-        </div>
+          <div className="mb-3">
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-black-50 border border-black-200 px-2 py-2 w-96 rounded-md outline-none placeholder-black-200"
+              placeholder="Name"
+            />
+          </div>
 
-        <div className="mb-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="bg-black-50 border border-black-200 px-2 py-2 w-96 rounded-md outline-none placeholder-black-200"
-            placeholder="Email"
-          />
-        </div>
+          <div className="mb-3">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-black-50 border border-black-200 px-2 py-2 w-96 rounded-md outline-none placeholder-black-200"
+              placeholder="Email"
+            />
+          </div>
 
-        <div className="mb-5">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="bg-black-50 border border-black-200 px-2 py-2 w-96 rounded-md outline-none placeholder-black-200"
-            placeholder="Password"
-          />
-        </div>
+          <div className="mb-5">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-black-50 border border-black-200 px-2 py-2 w-96 rounded-md outline-none placeholder-black-200"
+              placeholder="Password"
+            />
+          </div>
 
-        <div className="mb-5">
-          <button
-            onClick={signup}
-            className="bg-black-500 hover:bg-black-600 w-full text-white text-center py-2 font-bold rounded-md"
-          >
-            Signup
-          </button>
-        </div>
+          <div className="mb-5">
+            <button
+              onClick={signup}
+              className="w-full py-2 font-bold rounded-md transition duration-300 
+               bg-blue-500 text-white hover:bg-blue-600 focus:outline-none 
+               focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+            >
+              Signup
+            </button>
+          </div>
 
-        <div className="mb-5">
-          <button
-            onClick={googleSignup}
-            className="bg-white hover:bg-white w-full text-white text-center py-2 font-bold rounded-md"
-          >
-           <img src="/images/google.png" alt="" className="w-10 h-10 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100"/>
-           </button>
-        </div>
+          <div className="mb-5">
+            <button
+              onClick={googleSignup}
+              className="bg-white hover:bg-white w-full text-white text-center py-2 font-bold rounded-md"
+            >
+              <img src="/images/google.png" alt="" className="w-10 h-10 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100" />
+            </button>
+          </div>
 
-        <div>
-          <h2 className="text-white">
-            Have an account?{" "}
-            <Link className="text-black-500 font-bold" to={"/login"}>
-              Login
-            </Link>
-          </h2>
+          <div>
+            <h2 className="text-white">
+              Have an account?{" "}
+              <Link className="text-black-500 font-bold" to={"/login"}>
+                Login
+              </Link>
+            </h2>
+          </div>
         </div>
       </div>
-    </div>
     </Layout>
   );
 }

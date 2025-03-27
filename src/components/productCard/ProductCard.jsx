@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function ProductCard({ products, searchkey = "", filterType = "", filterPrice = "", mode }) {
+
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart);
@@ -27,14 +29,22 @@ function ProductCard({ products, searchkey = "", filterType = "", filterPrice = 
   };
 
   // ✅ Apply Filters to Products
-  const filteredProducts = products
-    .filter((obj) => obj.title.toLowerCase().includes(searchkey.toLowerCase()))
-    .filter((obj) => obj.category.toLowerCase().includes(filterType.toLowerCase()))
-    .sort((a, b) => {
-      if (filterPrice === "low") return Number(a.price) - Number(b.price);
-      if (filterPrice === "high") return Number(b.price) - Number(a.price);
-      return 0;
-    });
+  const filteredProducts = (products || [])
+  .map((obj) => ({
+    ...obj, // ✅ Spread existing object to retain all properties
+    title: obj.title.toLowerCase(),
+    category: obj.category.toLowerCase(),
+  }))
+  .filter((obj) => obj.title.includes(searchkey.toLowerCase()))
+  .filter((obj) => obj.category.includes(filterType.toLowerCase()))
+  .sort((a, b) => {
+    if (filterPrice === "low") return Number(a.price) - Number(b.price);
+    if (filterPrice === "high") return Number(b.price) - Number(a.price);
+    return 0;
+  });
+
+    
+
 
   return (
     <section className="text-gray-600 body-font">
@@ -49,15 +59,17 @@ function ProductCard({ products, searchkey = "", filterType = "", filterPrice = 
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+       
           {filteredProducts.map((item, index) => {
+             console.log(`🔎 Product ${index}:`, item);
             const { title, price, imageUrl1, id, quantity } = item;
+           
 
             return (
               <div key={index} className="p-4 drop-shadow-lg">
                 <div
-                  className={`h-full border-2 transition-shadow duration-300 ease-in-out border-gray-200 border-opacity-60 rounded-2xl overflow-hidden ${
-                    quantity === 0 ? "opacity-50" : ""
-                  }`} // ✅ Faded effect for out-of-stock products
+                  className={`h-full border-2 transition-shadow duration-300 ease-in-out border-gray-200 border-opacity-60 rounded-2xl overflow-hidden ${quantity === 0 ? "opacity-50" : ""
+                    }`} // ✅ Faded effect for out-of-stock products
                   style={{
                     backgroundColor: mode === "dark" ? "rgb(46 49 55)" : "white",
                     color: mode === "dark" ? "white" : "black",
@@ -74,11 +86,18 @@ function ProductCard({ products, searchkey = "", filterType = "", filterPrice = 
 
                   {/* Product Details */}
                   <div className="p-5 border-t-2">
-                    <h2 className="tracking-widest text-xs font-medium text-gray-400 mb-1">Hunar-Pashmina</h2>
-                    <h1 className="title-font text-lg font-medium mb-3 cursor-pointer" onClick={() => navigate(`/productinfo/${id}`)}>
+                    <h2 className={`tracking-widest text-xs font-medium mb-1 ${mode === "dark" ? "text-gray-300" : "text-gray-400"}`}>
+                      Hunar-Pashmina
+                    </h2>
+                    <h1
+                      className={`title-font text-lg font-medium mb-3 cursor-pointer ${mode === "dark" ? "text-white" : "text-black"}`}
+                      onClick={() => navigate(`/productinfo/${id}`)}
+                    >
                       {title}
                     </h1>
-                    <p className="leading-relaxed mb-3">₹{price}</p>
+                    <p className={`leading-relaxed mb-3 ${mode === "dark" ? "text-gray-300" : "text-gray-800"}`}>
+                      ₹{price}
+                    </p>
 
                     {/* ✅ Show Product Quantity */}
                     <p className={`text-sm font-semibold ${quantity > 0 ? "text-green-500" : "text-red-500"} mb-3`}>
@@ -90,16 +109,16 @@ function ProductCard({ products, searchkey = "", filterType = "", filterPrice = 
                       type="button"
                       onClick={(e) => addCart(e, item)}
                       disabled={quantity <= 0} // ✅ Disable button if out of stock
-                      className={`focus:outline-none text-white font-medium rounded-lg text-sm w-full py-2 transition-transform duration-300 ease-in-out hover:scale-110 ${
-                        quantity > 0 ? "hover:bg-blue-700 focus:ring-4 focus:ring-blue-300" : "bg-gray-500 cursor-not-allowed"
-                      }`
-                    }
-                    style={{ backgroundColor: '#22333B' }}
-
+                      className={`focus:outline-none text-white font-medium rounded-lg text-sm w-full py-2 transition-transform duration-300 ease-in-out hover:scale-110 ${quantity > 0
+                          ? "hover:bg-blue-700 focus:ring-4 focus:ring-blue-300"
+                          : "bg-gray-500 cursor-not-allowed"
+                        }`}
+                      style={{ backgroundColor: mode === "dark" ? "#374151" : "#22333B" }}
                     >
                       {quantity > 0 ? "Add To Cart" : "Out of Stock"}
                     </button>
                   </div>
+
                 </div>
               </div>
             );

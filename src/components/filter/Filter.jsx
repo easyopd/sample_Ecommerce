@@ -7,7 +7,7 @@ function Filter() {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     // Predefined categories
-    const categories = ["Pashmina", "Aari", "Other"];
+    const categories = ["Pashmina Kani", "Aari","Sozni", "Other"];
 
     // Reset Filter Function
     const resetFilters = () => {

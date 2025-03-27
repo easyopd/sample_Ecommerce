@@ -36,7 +36,7 @@ function myState(props) {
             }
         )
     });
-    console.log(products,"checking if products are saved in state successfully");
+    //console.log(products,"checking if products are saved in state successfully");
 
     const addProduct = async (productData) => {
         if (!productData.title || !productData.price || !productData.imageUrl1 || !productData.category || !productData.description) {
@@ -145,14 +145,14 @@ function myState(props) {
     const getOrderData = async () => {
         setLoading(true)
         try {
-            const result = await getDocs(collection(fireDB, "order"))
+            const result = await getDocs(collection(fireDB, "orders"))
             const ordersArray = [];
             result.forEach((doc) => {
                 ordersArray.push(doc.data());
                 setLoading(false)
             });
             setOrder(ordersArray);
-            console.log(ordersArray)
+           // console.log(ordersArray)
             setLoading(false);
         } catch (error) {
             console.log(error)
@@ -172,7 +172,7 @@ function myState(props) {
                 setLoading(false)
             });
             setUser(usersArray);
-            console.log(usersArray)
+           // console.log(usersArray)
             setLoading(false);
         } catch (error) {
             console.log(error)

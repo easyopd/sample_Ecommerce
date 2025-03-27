@@ -9,7 +9,7 @@ const AddProduct = () => {
   const { addProduct } = useContext(myContext);
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('Pashmina'); // ✅ Default category
+  const [category, setCategory] = useState('Pashmina Kani'); // ✅ Default category
   const [quantity, setQuantity] = useState(''); // ✅ Add quantity
   const [description, setDescription] = useState('');
   const [image1, setImage1] = useState(null);
@@ -70,14 +70,14 @@ const AddProduct = () => {
       // ✅ Reset form
       setTitle("");
       setPrice("");
-      setCategory("Pashmina");
+      setCategory("Pashmina Kani");
       setQuantity("");
       setDescription("");
       setImage1(null);
 
       navigate('/dashboard');
     } catch (error) {
-      console.error("Image Upload or Firestore Error:", error);
+      
       toast.error("Failed to upload image or add product.");
     }
   };
@@ -94,8 +94,9 @@ const AddProduct = () => {
 
         {/* ✅ Category Dropdown */}
         <select value={category} onChange={(e) => setCategory(e.target.value)} className="bg-gray-600 mb-4 px-2 py-2 w-full rounded-lg text-white outline-none">
-          <option value="Pashmina">Pashmina</option>
+          <option value="Pashmina Kani">Pashmina Kani</option>
           <option value="Aari">Aari</option>
+          <option value="Sozni">Sozni</option>
           <option value="Other">Other</option>
         </select>
 

@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 function Cart() {
   const context = useContext(myContext);
   const { mode } = context;
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const user = localStorage.getItem('user');
 
   const dispatch = useDispatch();
@@ -43,126 +43,127 @@ function Cart() {
 
   /**========================================================================
    *!                           Payment Integration with Quantity Management
-   *========================================================================**/ 
+   *========================================================================**/
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [pincode, setPincode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  
+
   const buyNow = async () => {
-    if(user){
-      
-    if (!name || !address || !pincode || !phoneNumber) {
-      return toast.error("All fields are required");
-    }
-    
-    // ✅ Construct Address Info
-    const addressInfo = {
-      name,
-      address,
-      pincode,
-      phoneNumber,
-      date: new Date().toLocaleString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      }),
-    };
-    
-    // ✅ Check for Out of Stock Products
-    const outOfStock = cartItems.some((item) => item.quantity <= 0);
-    if (outOfStock) {
-      return toast.error("Some products are out of stock. Please update your cart.");
-    }
-    
-    try {
-      // ✅ Call Firebase Cloud Function to Create Order
-      console.log("🔄 Creating Order...");
-      const orderResponse = await axios.post(
-        "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/createOrder",
-        { amount: grandTotal }
-      );
-    
-      console.log("✅ Order Created:", orderResponse.data); // Log complete response
-    
-      // ✅ Extract Order ID, Amount, and Currency
-      const { id: orderId, amount, currency } = orderResponse.data;
-      console.log("🎯 Order ID from API:", orderId);
-    
-      const options = {
-        key: "rzp_live_m1KjRaIiXqwMu5", // ✅ Replace with Live Key when going live
-        amount: amount,
-        currency: currency,
-        order_id: orderId,
-        name: "Hunar-Pashmina",
-        description: "Order Payment",
-        handler: async function (response) {
-          console.log("✅ Razorpay Payment Response:", response);
-          try {
-            console.log("🔄 Sending Payment for Verification...");
-            await verifyPayment(orderId, response.razorpay_payment_id, addressInfo);
-            console.log("✅ Payment Verified Successfully!");
-          } catch (error) {
-            console.error("❌ Payment Verification Failed:", error);
-            toast.error("Payment verification failed.");
-          }
-        },
-        theme: { color: "#3399cc" },
+    if (user) {
+
+      if (!name || !address || !pincode || !phoneNumber) {
+        return toast.error("All fields are required");
+      }
+
+      // ✅ Construct Address Info
+      const addressInfo = {
+        name,
+        address,
+        pincode,
+        phoneNumber,
+        date: new Date().toLocaleString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        }),
       };
-    
-     // console.log("🛒 Initializing Razorpay Checkout...");
-      
+
+      // ✅ Check for Out of Stock Products
+      const outOfStock = cartItems.some((item) => item.quantity <= 0);
+      if (outOfStock) {
+        return toast.error("Some products are out of stock. Please update your cart.");
+      }
+
+      try {
+        // ✅ Call Firebase Cloud Function to Create Order
+        //console.log("🔄 Creating Order...");
+        const orderResponse = await axios.post(
+          "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/createOrder",
+          { amount: grandTotal }
+        );
+
+       // console.log("✅ Order Created:", orderResponse.data); // Log complete response
+
+        // ✅ Extract Order ID, Amount, and Currency
+        const { id: orderId, amount, currency } = orderResponse.data;
+       // console.log("🎯 Order ID from API:", orderId);
+
+        const options = {
+          key: "rzp_live_m1KjRaIiXqwMu5", // ✅ Replace with Live Key when going live
+          amount: amount,
+          currency: currency,
+          order_id: orderId,
+          name: "Hunar-Pashmina",
+          description: "Order Payment",
+          handler: async function (response) {
+           // console.log("✅ Razorpay Payment Response:", response);
+            try {
+             // console.log("🔄 Sending Payment for Verification...");
+              await verifyPayment(orderId, response.razorpay_payment_id, addressInfo);
+             // console.log("✅ Payment Verified Successfully!");
+            } catch (error) {
+            //  console.error("❌ Payment Verification Failed:", error);
+              toast.error("Payment verification failed.");
+            }
+          },
+          theme: { color: "#3399cc" },
+        };
+
+        // console.log("🛒 Initializing Razorpay Checkout...");
+
         const rzp = new window.Razorpay(options);
-      
-      rzp.open();
-    } catch (error) {
-     // console.error("❌ Order API Error:", error);
-      toast.error("Failed to create order. Please try again.");
-    }
-  }else{
-    
+
+        rzp.open();
+      } catch (error) {
+        // console.error("❌ Order API Error:", error);
+        toast.error("Failed to create order. Please try again.");
+      }
+    } else {
+
       toast.error("Please login first");
       navigate("/login")
-    
-  }
+
+    }
   };
-  
+
   // ✅ Function to Verify Payment & Deduct Quantity
   const verifyPayment = async (orderId, paymentId, addressInfo) => {
     //console.log(paymentId,orderId,addressInfo," checking verify payment ");
     try {
       const user = JSON.parse(localStorage.getItem("user"));
       const email = user?.email || "no-email@provided.com"; // Get user email
-      
+
       const orderDetails = cartItems.map((item) => ({
         title: item.title,
         price: item.price,
         quantity: item.quantity,
-        productId: item.id, // ✅ Store product ID for quantity update
+        productId: item.id,
+        imageUrl: item.imageUrl1, // ✅ Store product ID for quantity update
       }));
       //console.log(orderDetails," checking order details");
-  
+
       // ✅ Call Firebase Cloud Function to Verify Payment & Send Email
-      
-        const verifyResponse = await axios.post(
-          "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/verifyPayment",
-          {
-            order_id: orderId,
-            payment_id: paymentId,
-            email,
-            addressInfo,
-            orderDetails,
-          }
-        );
-        // Check the response data here
-      
-      
-    
+
+      const verifyResponse = await axios.post(
+        "https://us-central1-hunarshawls-7f05d.cloudfunctions.net/verifyPayment",
+        {
+          order_id: orderId,
+          payment_id: paymentId,
+          email,
+          addressInfo,
+          orderDetails,
+        }
+      );
+      // Check the response data here
+
+
+
       if (verifyResponse.data.success) {
         toast.success("Payment verified successfully! Email Sent.");
-  
+
         // ✅ Store order details in Firestore
         await addDoc(collection(fireDB, "orders"), {
           orderId,
@@ -187,33 +188,33 @@ function Cart() {
         toast.error("Payment verification failed!");
       }
     } catch (error) {
-      console.error("Payment Verification Error:", error);
+    //  console.error("Payment Verification Error:", error);
       toast.error("Error verifying payment. Please contact support.");
     }
   };
 
   return (
     <Layout>
-          <div 
-            className={`h-screen pt-5 mb-[60%] transition-colors duration-300 ${
-              mode === 'dark' ? 'bg-gray-900 text-white' : 'bg-aqua text-black'
-            }`}
-          >
-                  <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
+      <div
+        className={`min-h-screen pt-5 pb-20 transition-colors duration-300 ${mode === 'dark' ? 'bg-gray-900 text-white' : 'bg-aqua text-black'
+          }`}
+      >
+
+        <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
         <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0">
           <div className="rounded-lg md:w-2/3">
             {cartItems.map((item, index) => {
               const { title, price, description, imageUrl1, quantity } = item;
               return (
                 <div key={index} className="justify-between mb-6 rounded-lg border drop-shadow-xl bg-white p-6 sm:flex sm:justify-start" style={{ backgroundColor: mode === 'dark' ? 'rgb(32 33 34)' : '', color: mode === 'dark' ? 'white' : '' }}>
-                 <img 
-                    src={imageUrl1} 
-                    alt="product-image" 
+                  <img
+                    src={imageUrl1}
+                    alt="product-image"
                     className="w-full rounded-lg sm:w-40 transition-transform duration-1000 ease-in-out hover:scale-110"
                   />
 
                   <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-                  <div className="mt-5 sm:mt-0">
+                    <div className="mt-5 sm:mt-0">
                       <h2 className={`text-lg font-bold transition-colors duration-300 ${mode === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                         {title}
                       </h2>
@@ -234,7 +235,11 @@ function Cart() {
             })}
           </div>
 
-          <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3 transition-transform duration-1000 ease-in-out hover:scale-110">
+          <div className={`mt-6 h-full rounded-lg border p-6 shadow-md md:mt-0 md:w-1/3 
+                transition-transform duration-1000 ease-in-out hover:scale-110 
+                sticky bottom-5 
+                ${mode === "dark" ? "bg-gray-900 text-white" : "bg-white text-black"}`}>
+
             <p className="text-lg font-bold">Total: ₹{grandTotal}</p>
             <Modal name={name} address={address} pincode={pincode} phoneNumber={phoneNumber} setName={setName} setAddress={setAddress} setPincode={setPincode} setPhoneNumber={setPhoneNumber} buyNow={buyNow} />
           </div>

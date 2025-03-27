@@ -29,13 +29,14 @@ function DashboardTab() {
 
     const add = () => {
         navigate('/addproduct');
-      }
+    }
     return (
         <>
             <div className="container mx-auto">
                 <div className="tab container mx-auto ">
                     <Tabs defaultIndex={0} className=" " >
-                        <TabList className="md:flex md:space-x-8 bg-  grid grid-cols-2 text-center gap-4   md:justify-center mb-10 ">
+                    <TabList className="md:flex md:space-x-8 bg-  grid grid-cols-2 text-center gap-4   md:justify-center mb-10 ">
+
                             <Tab>
                                 <button type="button" className="font-medium border-b-2 hover:shadow-purple-700 border-purple-500 text-purple-500 rounded-lg text-xl shadow-[inset_0_0_8px_rgba(0,0,0,0.6)]  px-5 py-1.5 text-center bg-[#605d5d12] ">
                                     <div className="flex gap-2 items-center">
@@ -155,92 +156,48 @@ function DashboardTab() {
                             <div className="relative overflow-x-auto mb-16">
                                 <h1 className=' text-center mb-5 text-3xl font-semibold underline' style={{ color: mode === 'dark' ? 'white' : '' }}>Order Details</h1>
 
-                                {order.map((allorder, index) => {
-                                    return (
-                                        <table key={index} className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                            <thead className="text-xs text-black uppercase bg-gray-200 " style={{ backgroundColor: mode === 'dark' ? 'rgb(46 49 55)' : '', color: mode === 'dark' ? 'white' : '', }}>
-                                                <tr>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Payment Id
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Image
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Title
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Price
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Category
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Name
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Address
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Pincode
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Phone Number
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Email
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3">
-                                                        Date
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            {allorder.cartItems.map((item, index) => {
-                                                const { title, description, category, imageUrl, price } = item;
+                                {order.map((allorder) => (
+                                    <table key={allorder.paymentId} className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                        <thead className={`text-xs uppercase bg-gray-200 ${mode === 'dark' ? 'bg-gray-800 text-white' : 'text-black'}`}>
+                                            <tr>
+                                                <th className="px-6 py-3">Payment Id</th>
+                                                <th className="px-6 py-3">Image</th>
+                                                <th className="px-6 py-3">Title</th>
+                                                <th className="px-6 py-3">Price</th>
+                                                <th className="px-6 py-3">Category</th>
+                                                <th className="px-6 py-3">Name</th>
+                                                <th className="px-6 py-3">Address</th>
+                                                <th className="px-6 py-3">Pincode</th>
+                                                <th className="px-6 py-3">Phone Number</th>
+                                                <th className="px-6 py-3">Email</th>
+                                                <th className="px-6 py-3">Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {allorder.orderDetails.map((item, index) => {
+                                                const { title, category, imageUrl, price } = item;
                                                 return (
-                                                    <tbody key={index}>
-                                                        <tr className="bg-gray-50 border-b dark:border-gray-700" style={{ backgroundColor: mode === 'dark' ? 'rgb(46 49 55)' : '', color: mode === 'dark' ? 'white' : '', }}>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {allorder.paymentId}
-                                                            </td>
-                                                            <th scope="row" className="px-6 py-4 font-medium text-black whitespace-nowrap">
-                                                                <img className='w-16' src={imageUrl} alt="img" />
-                                                            </th>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {title}
-                                                            </td>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                ₹{price}
-                                                            </td>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {category}
-                                                            </td>
-
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {allorder.addressInfo.name}
-                                                            </td>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {allorder.addressInfo.address}
-                                                            </td>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {allorder.addressInfo.pincode}
-                                                            </td>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {allorder.addressInfo.phoneNumber}
-                                                            </td>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {allorder.email}
-                                                            </td>
-                                                            <td className="px-6 py-4 text-black" style={{ color: mode === 'dark' ? 'white' : '' }}>
-                                                                {allorder.date}
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                )
+                                                    <tr key={item.id || index} className={`border-b ${mode === 'dark' ? 'bg-gray-700 text-white' : 'bg-gray-50 text-black'}`}>
+                                                        <td className="px-6 py-4">{allorder.paymentId}</td>
+                                                        <td className="px-6 py-4">
+                                                            <img className="w-16 rounded" src={imageUrl} alt="img" />
+                                                        </td>
+                                                        <td className="px-6 py-4">{title}</td>
+                                                        <td className="px-6 py-4">₹{price}</td>
+                                                        <td className="px-6 py-4">{category}</td>
+                                                        <td className="px-6 py-4">{allorder.addressInfo.name}</td>
+                                                        <td className="px-6 py-4">{allorder.addressInfo.address}</td>
+                                                        <td className="px-6 py-4">{allorder.addressInfo.pincode}</td>
+                                                        <td className="px-6 py-4">{allorder.addressInfo.phoneNumber}</td>
+                                                        <td className="px-6 py-4">{allorder.email}</td>
+                                                        <td className="px-6 py-4">{allorder.date}</td>
+                                                    </tr>
+                                                );
                                             })}
-                                        </table>
-                                    )
-                                })}
+                                        </tbody>
+                                    </table>
+                                ))}
+
 
                             </div>
                         </TabPanel>

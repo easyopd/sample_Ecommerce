@@ -5,12 +5,12 @@ import "slick-carousel/slick/slick-theme.css";
 
 function HeroSection() {
   const images = [
-    "/images/carosel1.jpg",
-    "/images/carosel2.jpeg",
-    "/images/carosel6.jpeg",
-    "/images/carosel3.jpg",
-    "/images/carosel4.jpg",
-    "/images/handmade.jpg",
+    "/images/PIC 1.jpg",
+    "/images/PIC 2.jpg",
+    "/images/PIC 6.jpg",
+    "/images/PIC 3.jpg",
+    "/images/PIC 4.jpg",
+    "/images/PIC 5.jpg",
     
     
   ];
@@ -28,10 +28,10 @@ function HeroSection() {
   };
 
   return (
-    <div className="w-full h-[75vh] px-4 lg:px-0">
+    <div className="w-full h-full px-4 lg:px-0">
       <Slider {...settings}>
         {images.map((src, index) => (
-          <div key={index} className="w-full h-[75vh]">
+          <div key={index} className="w-full h-full">
             <img
               src={src}
               alt={`Slide ${index + 1}`}

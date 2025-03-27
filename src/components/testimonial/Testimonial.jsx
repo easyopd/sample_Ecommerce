@@ -17,7 +17,7 @@ function Testimonial() {
                                 <p style={{ color: mode === 'dark' ? 'white' : '' }} className="leading-relaxed">"I am absolutely in love with my Pashmina shawl! The quality is outstanding, and the fabric is so soft and warm. It feels luxurious yet lightweight, making it perfect for any occasion. The intricate craftsmanship is truly a work of art.
                                      I received so many compliments, and I can’t wait to order more. Highly recommended!"</p>
                                 <span className="inline-block h-1 w-10 rounded bg-pink-500 mt-6 mb-4" />
-                                <h2 style={{ color: mode === 'dark' ? '#ff4162' : '' }} className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Soliha Showkat</h2>
+                                <h2 style={{ color: mode === 'dark' ? '#ff4162' : '' }} className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Kritika </h2>
                                 
                             </div>
                         </div>
@@ -27,7 +27,7 @@ function Testimonial() {
                                 <img alt="testimonial" className="w-20 h-20 mb-8 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100" src="/images/man.png" />
                                 <p  style={{color: mode === 'dark' ? 'white' : ''}}className="leading-relaxed">"I recently purchased a Pashmina shawl as a gift for my mother, and she was overjoyed! The texture is buttery soft, and the embroidery is exquisite. You can tell this is 100% authentic craftsmanship. The delivery was quick, and the packaging was elegant. Thank you for keeping this beautiful tradition alive!"</p>
                                 <span className="inline-block h-1 w-10 rounded bg-pink-500 mt-6 mb-4" />
-                                <h2 style={{color: mode === 'dark' ? '#ff4162' : ''}} className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Aubair</h2>
+                                <h2 style={{color: mode === 'dark' ? '#ff4162' : ''}} className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Rahul</h2>
                                 
                             </div>
                         </div>
@@ -36,7 +36,7 @@ function Testimonial() {
                                 <img alt="testimonial" className="w-20 h-20 mb-8 object-cover object-center rounded-full inline-block border-2 border-gray-200 bg-gray-100" src="/images/woman.png" />
                                 <p style={{color: mode === 'dark' ? 'white' : ''}} className="leading-relaxed">"This Pashmina shawl exceeded my expectations! The fabric is so fine and warm, yet incredibly breathable. It drapes beautifully and adds an elegant touch to any outfit. I love how versatile it is—I can wear it as a wrap in winter or a stylish accessory in autumn. Worth every penny!"</p>
                                 <span className="inline-block h-1 w-10 rounded bg-pink-500 mt-6 mb-4" />
-                                <h2 style={{color: mode === 'dark' ? '#ff4162' : ''}} className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Souiba</h2>
+                                <h2 style={{color: mode === 'dark' ? '#ff4162' : ''}} className="text-gray-900 font-medium title-font tracking-wider text-sm uppercase">Amanshi</h2>
                              
                             </div>
                         </div>
