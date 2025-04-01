@@ -25,7 +25,7 @@ const TidioChat = lazy(() => import('./components/chatbot/Tidio'));
 
 function App() {
   return (
-    <MyState>
+   
       <Router>
       <Suspense fallback={<SpinnerComponent />}>
           <Routes>
@@ -70,7 +70,7 @@ function App() {
           <ToastContainer />
         </Suspense>
       </Router>
-    </MyState>
+    
   );
 }
 

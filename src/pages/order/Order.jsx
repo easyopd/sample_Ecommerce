@@ -7,10 +7,11 @@ function Order() {
   const [userEmail, setUserEmail] = useState(null);
   const context = useContext(myContext);
   const { mode, loading, order } = context;
-
+ 
+  
   useEffect(() => {
     const userData = localStorage.getItem('user');
-
+   
     if (userData) {
       const parsedData = JSON.parse(userData);
       if (parsedData && parsedData.email) { 
